@@ -34,8 +34,12 @@ private:
     QTextEdit *textEdit;
     QListWidget *customerList;
     QListWidget *paragraphsList;
-    FrameWindow* imageBoard;
 
+    // Dock Windows
+    FrameWindow* originalFrameBoard;
+    FrameWindow* enhencedFrameBorad;
+
+    // Center Window
     FrameWindow* centerFrameBoard;
 
     QMenu *viewMenu;

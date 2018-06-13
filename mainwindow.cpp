@@ -12,6 +12,7 @@ MainWindow::MainWindow()
     this->centerFrameBoard = new FrameWindow();
     setCentralWidget(this->centerFrameBoard);
 
+    // TODO--test
     cv::Mat img = cv::imread("/home/runisys/Desktop/data/OpenCVImageData/data/lena.jpg");
     if(!img.empty())
     {
@@ -22,7 +23,7 @@ MainWindow::MainWindow()
     createStatusBar();
     createDockWindows();
 
-    setWindowTitle(tr("Dock Widgets"));
+    setWindowTitle(tr("ShowCase Demo"));
 
     newLetter();
     setUnifiedTitleAndToolBarOnMac(true);
@@ -264,11 +265,21 @@ void MainWindow::createDockWindows()
     textWidgetDock->setWidget(this->textEdit);
     addDockWidget(Qt::BottomDockWidgetArea, textWidgetDock);
 
+    QDockWidget *enhencedFrameDock = new QDockWidget(tr("EnhencedFrame"), this);
+    enhencedFrameDock->setAllowedAreas(Qt::BottomDockWidgetArea |
+                                    Qt::TopDockWidgetArea |
+                                    Qt::RightDockWidgetArea |
+                                    Qt::LeftDockWidgetArea);
+    this->enhencedFrameBorad = new FrameWindow(enhencedFrameDock);
+    this->enhencedFrameBorad->setMinimumHeight(300);
+    enhencedFrameDock->setWidget(this->enhencedFrameBorad);
+    addDockWidget(Qt::BottomDockWidgetArea, enhencedFrameDock);
+
     QDockWidget *imageBoradDock = new QDockWidget(tr("ImageBoard"), this);
     imageBoradDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    this->imageBoard = new FrameWindow(imageBoradDock);
-    this->imageBoard->setMinimumWidth(200);
-    imageBoradDock->setWidget(this->imageBoard);
+    this->originalFrameBoard = new FrameWindow(imageBoradDock);
+    this->originalFrameBoard->setMinimumWidth(200);
+    imageBoradDock->setWidget(this->originalFrameBoard);
     addDockWidget(Qt::LeftDockWidgetArea, imageBoradDock);
 
     QDockWidget *customersDock = new QDockWidget(tr("Customers"), this);
