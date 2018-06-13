@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "framewindow.h"
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -33,6 +34,7 @@ private:
     QTextEdit *textEdit;
     QListWidget *customerList;
     QListWidget *paragraphsList;
+    FrameWindow* imageBoard;
 
     QMenu *viewMenu;
 };

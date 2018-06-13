@@ -14,9 +14,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    framewindow.cpp
 
 HEADERS += \
-    mainwindow.h
+    mainwindow.h \
+    framewindow.h
 
 RESOURCES +=
+
+INCLUDEPATH += /usr/local/opencv3/include/
+LIBS += -L/usr/local/opencv3/lib/ -lopencv_core -lopencv_imgcodecs -lopencv_highgui

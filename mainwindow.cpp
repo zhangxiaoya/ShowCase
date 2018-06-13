@@ -245,9 +245,16 @@ void MainWindow::createStatusBar()
 //! [9]
 void MainWindow::createDockWindows()
 {
-    QDockWidget *dock = new QDockWidget(tr("Customers"), this);
-    dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    customerList = new QListWidget(dock);
+    QDockWidget *imageBoradDock = new QDockWidget(tr("ImageBoard"), this);
+    imageBoradDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    this->imageBoard = new FrameWindow(imageBoradDock);
+    this->imageBoard->setMinimumWidth(200);
+    imageBoradDock->setWidget(this->imageBoard);
+    addDockWidget(Qt::LeftDockWidgetArea, imageBoradDock);
+
+    QDockWidget *customersDock = new QDockWidget(tr("Customers"), this);
+    customersDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    customerList = new QListWidget(customersDock);
     customerList->addItems(QStringList()
             << "John Doe, Harmony Enterprises, 12 Lakeside, Ambleton"
             << "Jane Doe, Memorabilia, 23 Watersedge, Beaton"
@@ -255,12 +262,13 @@ void MainWindow::createDockWindows()
             << "Tim Sheen, Caraba Gifts, 48 Ocean Way, Deal"
             << "Sol Harvey, Chicos Coffee, 53 New Springs, Eccleston"
             << "Sally Hobart, Tiroli Tea, 67 Long River, Fedula");
-    dock->setWidget(customerList);
-    addDockWidget(Qt::RightDockWidgetArea, dock);
-    viewMenu->addAction(dock->toggleViewAction());
+    customersDock->setWidget(customerList);
+    addDockWidget(Qt::RightDockWidgetArea, customersDock);
+    viewMenu->addAction(customersDock->toggleViewAction());
 
-    dock = new QDockWidget(tr("Paragraphs"), this);
-    paragraphsList = new QListWidget(dock);
+    QDockWidget *paragraphsDock = new QDockWidget(tr("Paragraphs"), this);
+    paragraphsDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    paragraphsList = new QListWidget(paragraphsDock);
     paragraphsList->addItems(QStringList()
             << "Thank you for your payment which we have received today."
             << "Your order has been dispatched and should be with you "
@@ -279,9 +287,9 @@ void MainWindow::createDockWindows()
                "the complete amount has been received."
             << "You made an overpayment (more than $5). Do you wish to "
                "buy more items, or should we return the excess to you?");
-    dock->setWidget(paragraphsList);
-    addDockWidget(Qt::RightDockWidgetArea, dock);
-    viewMenu->addAction(dock->toggleViewAction());
+    paragraphsDock->setWidget(paragraphsList);
+    addDockWidget(Qt::RightDockWidgetArea, paragraphsDock);
+    viewMenu->addAction(paragraphsDock->toggleViewAction());
 
     connect(customerList, &QListWidget::currentTextChanged,
             this, &MainWindow::insertCustomer);
