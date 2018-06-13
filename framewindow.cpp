@@ -3,16 +3,34 @@
 
 FrameWindow::FrameWindow(QWidget *parent) : QWidget(parent)
 {
+
     // new frame board use qlabel and set object name
-    this->pFrameBoard = new QLabel(this);
+    this->pFrameBoard = new QLabel();
     this->pFrameBoard->setObjectName(QString::fromUtf8("FrameBorad"));
+    this->pFrameBoard->setBackgroundRole(QPalette::Base);
+    this->pFrameBoard->setSizePolicy(QSizePolicy::Ignored,QSizePolicy::Ignored);
+    this->pFrameBoard->setScaledContents(true);
+
+    this->scrollAreaLayout = new QGridLayout();
+    this->scrollAreaLayout->setObjectName(QString::fromUtf8("ScrollLayout"));
+    this->scrollAreaLayout->addWidget(this->pFrameBoard,0,0,1,1);
+
+    // Scroll Area
+    this->scrollArea = new QScrollArea(this);
+    this->scrollArea->setBackgroundRole(QPalette::Dark);
+    this->scrollArea->setWidget(this->pFrameBoard);
+    this->scrollArea->setVisible(true);
+    this->scrollArea->setAlignment(Qt::AlignCenter);
+    this->scrollArea->setLayout(this->scrollAreaLayout);
 
     // new main layout and set object name
     this->pMainLayout = new QGridLayout(this);
     this->pMainLayout->setObjectName(QString::fromUtf8("MainLayout"));
+    this->pMainLayout->addWidget(this->scrollArea, 0,0,1,1);
 
     // set layout for this widget
     this->setLayout(this->pMainLayout);
+
 }
 
 FrameWindow::~FrameWindow()

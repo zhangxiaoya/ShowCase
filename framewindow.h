@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QLabel>
 #include <QGridLayout>
+#include <QScrollArea>
 #include <opencv2/core.hpp>
 
 class FrameWindow : public QWidget
@@ -28,6 +29,10 @@ private:
     QLabel* pFrameBoard;
     // Main layout for this widget
     QGridLayout* pMainLayout;
+    QGridLayout* scrollAreaLayout;
+    // QScroll Area
+    QScrollArea* scrollArea;
+
     // Current frame
     cv::Mat currentFrame;
     QImage currentImage;
