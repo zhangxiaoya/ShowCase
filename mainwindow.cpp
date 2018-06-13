@@ -17,6 +17,9 @@ MainWindow::MainWindow()
 
     newLetter();
     setUnifiedTitleAndToolBarOnMac(true);
+
+    // set maximize window by default
+    this->setWindowState(Qt::WindowMaximized);
 }
 //! [1]
 
