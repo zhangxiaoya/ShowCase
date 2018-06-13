@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QLabel>
 #include <QGridLayout>
+#include <opencv2/core.hpp>
 
 class FrameWindow : public QWidget
 {
@@ -13,13 +14,23 @@ public:
 
     ~FrameWindow();
 
+    void SetFrame(cv::Mat& frame);
+
 signals:
 
 public slots:
 
+protected:
+    void UpdateFrame();
+
 private:
+    // Label for show mat
     QLabel* pFrameBoard;
+    // Main layout for this widget
     QGridLayout* pMainLayout;
+    // Current frame
+    cv::Mat currentFrame;
+    QImage currentImage;
 };
 
 #endif // FRAMEWINDOW_H

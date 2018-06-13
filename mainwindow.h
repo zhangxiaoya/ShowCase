@@ -36,6 +36,8 @@ private:
     QListWidget *paragraphsList;
     FrameWindow* imageBoard;
 
+    FrameWindow* centerFrameBoard;
+
     QMenu *viewMenu;
 };
 

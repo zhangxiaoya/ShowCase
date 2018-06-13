@@ -2,12 +2,21 @@
 #include <QtWidgets>
 
 #include "mainwindow.h"
+#include <opencv2/core.hpp>
+#include <opencv2/imgproc.hpp>
+#include <opencv2/highgui.hpp>
 
 //! [1]
 MainWindow::MainWindow()
-    : textEdit(new QTextEdit)
 {
-    setCentralWidget(textEdit);
+    this->centerFrameBoard = new FrameWindow();
+    setCentralWidget(this->centerFrameBoard);
+
+    cv::Mat img = cv::imread("/home/runisys/Desktop/data/OpenCVImageData/data/lena.jpg");
+    if(!img.empty())
+    {
+        this->centerFrameBoard->SetFrame(img);
+    }
 
     createActions();
     createStatusBar();
@@ -245,6 +254,16 @@ void MainWindow::createStatusBar()
 //! [9]
 void MainWindow::createDockWindows()
 {
+    QDockWidget *textWidgetDock = new QDockWidget(tr("Text"), this);
+    textWidgetDock->setAllowedAreas(Qt::BottomDockWidgetArea |
+                                    Qt::TopDockWidgetArea |
+                                    Qt::RightDockWidgetArea |
+                                    Qt::LeftDockWidgetArea);
+    this->textEdit = new QTextEdit(textWidgetDock);
+    this->textEdit->setMinimumHeight(300);
+    textWidgetDock->setWidget(this->textEdit);
+    addDockWidget(Qt::BottomDockWidgetArea, textWidgetDock);
+
     QDockWidget *imageBoradDock = new QDockWidget(tr("ImageBoard"), this);
     imageBoradDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     this->imageBoard = new FrameWindow(imageBoradDock);
