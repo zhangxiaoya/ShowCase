@@ -9,9 +9,11 @@
 //! [1]
 MainWindow::MainWindow(QApplication* app)
 {
+    // set  qt awesome
     this->awesome = new QtAwesome(app);
     this->awesome->initFontAwesome();
 
+    // set center window
     this->centerFrameBoard = new FrameWindow();
     setCentralWidget(this->centerFrameBoard);
 
@@ -22,10 +24,14 @@ MainWindow::MainWindow(QApplication* app)
         this->centerFrameBoard->SetFrame(img);
     }
 
+    // default video path
+    this->VideoFilePath = tr("");
+
     createActions();
     createStatusBar();
     createDockWindows();
 
+    // set windows title
     setWindowTitle(tr("ShowCase Demo"));
 
     newLetter();
@@ -107,8 +113,8 @@ void MainWindow::save()
 {
     QMimeDatabase mimeDatabase;
     QString fileName = QFileDialog::getSaveFileName(this,
-                        tr("Choose a file name"), ".",
-                        mimeDatabase.mimeTypeForName("text/html").filterString());
+                                                    tr("Choose a file name"), ".",
+                                                    mimeDatabase.mimeTypeForName("text/html").filterString());
     if (fileName.isEmpty())
         return;
     QFile file(fileName);
@@ -183,11 +189,11 @@ void MainWindow::addParagraph(const QString &paragraph)
 
 void MainWindow::about()
 {
-   QMessageBox::about(this, tr("About Dock Widgets"),
-            tr("The <b>Dock Widgets</b> example demonstrates how to "
-               "use Qt's dock widgets. You can enter your own text, "
-               "click a customer to add a customer name and "
-               "address, and click standard paragraphs to add them."));
+    QMessageBox::about(this, tr("About Dock Widgets"),
+                       tr("The <b>Dock Widgets</b> example demonstrates how to "
+                          "use Qt's dock widgets. You can enter your own text, "
+                          "click a customer to add a customer name and "
+                          "address, and click standard paragraphs to add them."));
 }
 
 void MainWindow::createActions()
@@ -195,13 +201,12 @@ void MainWindow::createActions()
     QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
     QToolBar *fileToolBar = addToolBar(tr("File"));
 
-    const QIcon newIcon = QIcon::fromTheme("document-new", QIcon(":/images/new.png"));
-    QAction *newLetterAct = new QAction(newIcon, tr("&New Letter"), this);
-    newLetterAct->setShortcuts(QKeySequence::New);
-    newLetterAct->setStatusTip(tr("Create a new form letter"));
-    connect(newLetterAct, &QAction::triggered, this, &MainWindow::newLetter);
-    fileMenu->addAction(newLetterAct);
-    fileToolBar->addAction(newLetterAct);
+    QAction *openVideoAct = new QAction(this->awesome->icon(fa::filevideoo), tr("&Open Video"), this);
+    openVideoAct->setShortcuts(QKeySequence::Open);
+    openVideoAct->setStatusTip(tr("Open One Video File"));
+    connect(openVideoAct, &QAction::triggered, this, &MainWindow::newLetter);
+    fileMenu->addAction(openVideoAct);
+    fileToolBar->addAction(openVideoAct);
 
     const QIcon saveIcon = QIcon::fromTheme("document-save", QIcon(":/images/save.png"));
     QAction *saveAct = new QAction(saveIcon, tr("&Save..."), this);
@@ -211,13 +216,13 @@ void MainWindow::createActions()
     fileMenu->addAction(saveAct);
     fileToolBar->addAction(saveAct);
 
-//    const QIcon printIcon = QIcon::fromTheme("document-print", QIcon(":/images/print.png"));
-//    QAction *printAct = new QAction(printIcon, tr("&Print..."), this);
-//    printAct->setShortcuts(QKeySequence::Print);
-//    printAct->setStatusTip(tr("Print the current form letter"));
-//    connect(printAct, &QAction::triggered, this, &MainWindow::print);
-//    fileMenu->addAction(printAct);
-//    fileToolBar->addAction(printAct);
+    //    const QIcon printIcon = QIcon::fromTheme("document-print", QIcon(":/images/print.png"));
+    //    QAction *printAct = new QAction(printIcon, tr("&Print..."), this);
+    //    printAct->setShortcuts(QKeySequence::Print);
+    //    printAct->setStatusTip(tr("Print the current form letter"));
+    //    connect(printAct, &QAction::triggered, this, &MainWindow::print);
+    //    fileMenu->addAction(printAct);
+    //    fileToolBar->addAction(printAct);
 
     fileMenu->addSeparator();
 
@@ -270,9 +275,9 @@ void MainWindow::createDockWindows()
 
     QDockWidget *enhencedFrameDock = new QDockWidget(tr("EnhencedFrame"), this);
     enhencedFrameDock->setAllowedAreas(Qt::BottomDockWidgetArea |
-                                    Qt::TopDockWidgetArea |
-                                    Qt::RightDockWidgetArea |
-                                    Qt::LeftDockWidgetArea);
+                                       Qt::TopDockWidgetArea |
+                                       Qt::RightDockWidgetArea |
+                                       Qt::LeftDockWidgetArea);
     this->enhencedFrameBorad = new FrameWindow(enhencedFrameDock);
     this->enhencedFrameBorad->setMinimumHeight(300);
     enhencedFrameDock->setWidget(this->enhencedFrameBorad);
@@ -285,6 +290,14 @@ void MainWindow::createDockWindows()
     imageBoradDock->setWidget(this->originalFrameBoard);
     addDockWidget(Qt::LeftDockWidgetArea, imageBoradDock);
 
+    // TO-DO test
+    cv::Mat img = cv::imread("/home/runisys/Desktop/data/OpenCVImageData/data/lena.jpg");
+    if(!img.empty())
+    {
+        this->enhencedFrameBorad->SetFrame(img);
+        this->originalFrameBoard->SetFrame(img);
+    }
+
     setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
     setCorner(Qt::BottomLeftCorner,Qt::LeftDockWidgetArea);
 
@@ -292,12 +305,12 @@ void MainWindow::createDockWindows()
     customersDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     customerList = new QListWidget(customersDock);
     customerList->addItems(QStringList()
-            << "John Doe, Harmony Enterprises, 12 Lakeside, Ambleton"
-            << "Jane Doe, Memorabilia, 23 Watersedge, Beaton"
-            << "Tammy Shea, Tiblanka, 38 Sea Views, Carlton"
-            << "Tim Sheen, Caraba Gifts, 48 Ocean Way, Deal"
-            << "Sol Harvey, Chicos Coffee, 53 New Springs, Eccleston"
-            << "Sally Hobart, Tiroli Tea, 67 Long River, Fedula");
+                           << "John Doe, Harmony Enterprises, 12 Lakeside, Ambleton"
+                           << "Jane Doe, Memorabilia, 23 Watersedge, Beaton"
+                           << "Tammy Shea, Tiblanka, 38 Sea Views, Carlton"
+                           << "Tim Sheen, Caraba Gifts, 48 Ocean Way, Deal"
+                           << "Sol Harvey, Chicos Coffee, 53 New Springs, Eccleston"
+                           << "Sally Hobart, Tiroli Tea, 67 Long River, Fedula");
     customersDock->setWidget(customerList);
     addDockWidget(Qt::RightDockWidgetArea, customersDock);
     viewMenu->addAction(customersDock->toggleViewAction());
@@ -306,23 +319,23 @@ void MainWindow::createDockWindows()
     paragraphsDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     paragraphsList = new QListWidget(paragraphsDock);
     paragraphsList->addItems(QStringList()
-            << "Thank you for your payment which we have received today."
-            << "Your order has been dispatched and should be with you "
-               "within 28 days."
-            << "We have dispatched those items that were in stock. The "
-               "rest of your order will be dispatched once all the "
-               "remaining items have arrived at our warehouse. No "
-               "additional shipping charges will be made."
-            << "You made a small overpayment (less than $5) which we "
-               "will keep on account for you, or return at your request."
-            << "You made a small underpayment (less than $1), but we have "
-               "sent your order anyway. We'll add this underpayment to "
-               "your next bill."
-            << "Unfortunately you did not send enough money. Please remit "
-               "an additional $. Your order will be dispatched as soon as "
-               "the complete amount has been received."
-            << "You made an overpayment (more than $5). Do you wish to "
-               "buy more items, or should we return the excess to you?");
+                             << "Thank you for your payment which we have received today."
+                             << "Your order has been dispatched and should be with you "
+                                "within 28 days."
+                             << "We have dispatched those items that were in stock. The "
+                                "rest of your order will be dispatched once all the "
+                                "remaining items have arrived at our warehouse. No "
+                                "additional shipping charges will be made."
+                             << "You made a small overpayment (less than $5) which we "
+                                "will keep on account for you, or return at your request."
+                             << "You made a small underpayment (less than $1), but we have "
+                                "sent your order anyway. We'll add this underpayment to "
+                                "your next bill."
+                             << "Unfortunately you did not send enough money. Please remit "
+                                "an additional $. Your order will be dispatched as soon as "
+                                "the complete amount has been received."
+                             << "You made an overpayment (more than $5). Do you wish to "
+                                "buy more items, or should we return the excess to you?");
     paragraphsDock->setWidget(paragraphsList);
     addDockWidget(Qt::RightDockWidgetArea, paragraphsDock);
     viewMenu->addAction(paragraphsDock->toggleViewAction());

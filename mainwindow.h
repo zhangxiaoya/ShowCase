@@ -46,6 +46,9 @@ private:
     // Center Window
     FrameWindow* centerFrameBoard;
 
+    // Save Video file full path
+    QString VideoFilePath;
+
     QMenu *viewMenu;
 };
 
