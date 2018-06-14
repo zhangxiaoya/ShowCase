@@ -1,5 +1,6 @@
 
 #include <QtWidgets>
+#include <QDebug>
 
 #include "mainwindow.h"
 #include <opencv2/core.hpp>
@@ -34,7 +35,6 @@ MainWindow::MainWindow(QApplication* app)
     // set windows title
     setWindowTitle(tr("ShowCase Demo"));
 
-    newLetter();
     setUnifiedTitleAndToolBarOnMac(true);
 
     // set maximize window by default
@@ -43,70 +43,17 @@ MainWindow::MainWindow(QApplication* app)
 //! [1]
 
 //! [2]
-void MainWindow::newLetter()
+void MainWindow::openVideoFile()
 {
-    textEdit->clear();
-
-    QTextCursor cursor(textEdit->textCursor());
-    cursor.movePosition(QTextCursor::Start);
-    QTextFrame *topFrame = cursor.currentFrame();
-    QTextFrameFormat topFrameFormat = topFrame->frameFormat();
-    topFrameFormat.setPadding(16);
-    topFrame->setFrameFormat(topFrameFormat);
-
-    QTextCharFormat textFormat;
-    QTextCharFormat boldFormat;
-    boldFormat.setFontWeight(QFont::Bold);
-    QTextCharFormat italicFormat;
-    italicFormat.setFontItalic(true);
-
-    QTextTableFormat tableFormat;
-    tableFormat.setBorder(1);
-    tableFormat.setCellPadding(16);
-    tableFormat.setAlignment(Qt::AlignRight);
-    cursor.insertTable(1, 1, tableFormat);
-    cursor.insertText("The Firm", boldFormat);
-    cursor.insertBlock();
-    cursor.insertText("321 City Street", textFormat);
-    cursor.insertBlock();
-    cursor.insertText("Industry Park");
-    cursor.insertBlock();
-    cursor.insertText("Some Country");
-    cursor.setPosition(topFrame->lastPosition());
-    cursor.insertText(QDate::currentDate().toString("d MMMM yyyy"), textFormat);
-    cursor.insertBlock();
-    cursor.insertBlock();
-    cursor.insertText("Dear ", textFormat);
-    cursor.insertText("NAME", italicFormat);
-    cursor.insertText(",", textFormat);
-    for (int i = 0; i < 3; ++i)
-        cursor.insertBlock();
-    cursor.insertText(tr("Yours sincerely,"), textFormat);
-    for (int i = 0; i < 3; ++i)
-        cursor.insertBlock();
-    cursor.insertText("The Boss", textFormat);
-    cursor.insertBlock();
-    cursor.insertText("ADDRESS", italicFormat);
+    this->VideoFilePath = QFileDialog::getOpenFileName(this,
+                                                       tr("Open Video"), "/home/",
+                                                       tr("Video Files (*.avi *.mp4)"));
 }
 //! [2]
 
 //! [3]
-//void MainWindow::print()
-//{
-//#if QT_CONFIG(printdialog)
-//    QTextDocument *document = textEdit->document();
-//    QPrinter printer;
 
-//    QPrintDialog dlg(&printer, this);
-//    if (dlg.exec() != QDialog::Accepted) {
-//        return;
-//    }
-
-//    document->print(&printer);
-//    statusBar()->showMessage(tr("Ready"), 2000);
-//#endif
-//}
-////! [3]
+//! [3]
 
 //! [4]
 void MainWindow::save()
@@ -204,7 +151,7 @@ void MainWindow::createActions()
     QAction *openVideoAct = new QAction(this->awesome->icon(fa::filevideoo), tr("&Open Video"), this);
     openVideoAct->setShortcuts(QKeySequence::Open);
     openVideoAct->setStatusTip(tr("Open One Video File"));
-    connect(openVideoAct, &QAction::triggered, this, &MainWindow::newLetter);
+    connect(openVideoAct, &QAction::triggered, this, &MainWindow::openVideoFile);
     fileMenu->addAction(openVideoAct);
     fileToolBar->addAction(openVideoAct);
 

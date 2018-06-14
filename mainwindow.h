@@ -20,7 +20,7 @@ public:
     MainWindow(QApplication* app);
 
 private slots:
-    void newLetter();
+    void openVideoFile();
     void save();
     void undo();
     void about();
