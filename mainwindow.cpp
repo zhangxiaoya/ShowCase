@@ -282,6 +282,9 @@ void MainWindow::createDockWindows()
     imageBoradDock->setWidget(this->originalFrameBoard);
     addDockWidget(Qt::LeftDockWidgetArea, imageBoradDock);
 
+    setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
+    setCorner(Qt::BottomLeftCorner,Qt::LeftDockWidgetArea);
+
     QDockWidget *customersDock = new QDockWidget(tr("Customers"), this);
     customersDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     customerList = new QListWidget(customersDock);
