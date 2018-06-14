@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "framewindow.h"
+#include "QtAwesome.h"
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -16,7 +17,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow();
+    MainWindow(QApplication* app);
 
 private slots:
     void newLetter();
@@ -34,6 +35,9 @@ private:
     QTextEdit *textEdit;
     QListWidget *customerList;
     QListWidget *paragraphsList;
+
+    // QtAwesome
+    QtAwesome* awesome;
 
     // Dock Windows
     FrameWindow* originalFrameBoard;

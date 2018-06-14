@@ -7,8 +7,11 @@
 #include <opencv2/highgui.hpp>
 
 //! [1]
-MainWindow::MainWindow()
+MainWindow::MainWindow(QApplication* app)
 {
+    this->awesome = new QtAwesome(app);
+    this->awesome->initFontAwesome();
+
     this->centerFrameBoard = new FrameWindow();
     setCentralWidget(this->centerFrameBoard);
 
