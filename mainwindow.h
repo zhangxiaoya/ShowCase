@@ -22,7 +22,7 @@ public:
 private slots:
     void openVideoFile();
     void runProcess();
-    void undo();
+    void setting();
     void about();
     void insertCustomer(const QString &customer);
     void addParagraph(const QString &paragraph);

@@ -82,7 +82,7 @@ void MainWindow::runProcess()
 //! [4]
 
 //! [5]
-void MainWindow::undo()
+void MainWindow::setting()
 {
     QTextDocument *document = textEdit->document();
     document->undo();
@@ -136,21 +136,25 @@ void MainWindow::addParagraph(const QString &paragraph)
 
 void MainWindow::about()
 {
-    QMessageBox::about(this, tr("About Dock Widgets"),
-                       tr("The <b>Dock Widgets</b> example demonstrates how to "
-                          "use Qt's dock widgets. You can enter your own text, "
-                          "click a customer to add a customer name and "
-                          "address, and click standard paragraphs to add them."));
+    QMessageBox::about(this, tr("About Showcase Demo"),
+                       tr("The <b>Showcase Demo</b> demonstrates how to enhence video, "
+                          "and how to detect target from video file. "
+                          "And this just a showcase for part of algorithm, "
+                          "the complete solution place contact me."));
 }
 
 void MainWindow::createActions()
 {
+    /**************************************************/
+    /*   File Menu and Toolbar                        */
+    /**************************************************/
+
     // create menu for file
     QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
     // create tool bar for file
     QToolBar *fileToolBar = addToolBar(tr("File"));
 
-    // create open video file action and set propos for this action
+    // create open video file action and set props for this action
     QAction *openVideoAct = new QAction(this->awesome->icon(fa::filevideoo), tr("&Open Video"), this);
     openVideoAct->setShortcuts(QKeySequence::Open);
     openVideoAct->setStatusTip(tr("Open One Video File"));
@@ -163,29 +167,53 @@ void MainWindow::createActions()
     // add openfile action to toolbar(file)
     fileToolBar->addAction(openVideoAct);
 
+    // create play action and set props
     QAction *runAct = new QAction(this->awesome->icon(fa::play), tr("&Play"), this);
     runAct->setShortcuts(QKeySequence::Refresh);
     runAct->setStatusTip(tr("Run Process for current Video"));
+
+    // connect signal of run action to runProcess slot
     connect(runAct, &QAction::triggered, this, &MainWindow::runProcess);
+
+    // add run action to file menu
     fileMenu->addAction(runAct);
+    // add run action to file toolbar
     fileToolBar->addAction(runAct);
 
+    // file menu add separator
     fileMenu->addSeparator();
 
-    QAction *quitAct = fileMenu->addAction(tr("&Quit"), this, &QWidget::close);
+    // create quit action and add to file menu
+    QAction *quitAct = fileMenu->addAction(this->awesome->icon(fa::timescircle),tr("&Quit"), this, &QWidget::close);
     quitAct->setShortcuts(QKeySequence::Quit);
-    quitAct->setStatusTip(tr("Quit the application"));
+    quitAct->setStatusTip(tr("Quit the Showcase Demo"));
 
+    /**************************************************/
+    /*   Setting Menu and Toolbar                     */
+    /**************************************************/
+
+    // Create Setting menu and toolbar
     QMenu *editMenu = menuBar()->addMenu(tr("&Edit"));
     QToolBar *editToolBar = addToolBar(tr("Edit"));
-    const QIcon undoIcon = QIcon::fromTheme("edit-undo", QIcon(":/images/undo.png"));
-    QAction *undoAct = new QAction(undoIcon, tr("&Undo"), this);
-    undoAct->setShortcuts(QKeySequence::Undo);
-    undoAct->setStatusTip(tr("Undo the last editing action"));
-    connect(undoAct, &QAction::triggered, this, &MainWindow::undo);
-    editMenu->addAction(undoAct);
-    editToolBar->addAction(undoAct);
 
+    // create setting action and set props
+    QAction *settingAct = new QAction(this->awesome->icon(fa::cog), tr("&Setting"), this);
+    settingAct->setShortcuts(QKeySequence::Preferences);
+    settingAct->setStatusTip(tr("Setting"));
+
+    // connet setting action signal to setting slot
+    connect(settingAct, &QAction::triggered, this, &MainWindow::setting);
+
+    // add setting action to edit menu
+    editMenu->addAction(settingAct);
+    // add setting action to edit toolbar
+    editToolBar->addAction(settingAct);
+
+    /**************************************************/
+    /*   View Menu and Toolbar                        */
+    /**************************************************/
+
+    // create view menu
     viewMenu = menuBar()->addMenu(tr("&View"));
 
     menuBar()->addSeparator();
