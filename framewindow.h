@@ -5,7 +5,10 @@
 #include <QLabel>
 #include <QGridLayout>
 #include <QScrollArea>
+#include <QScrollBar>
 #include <opencv2/core.hpp>
+
+class QScrollBar;
 
 class FrameWindow : public QWidget
 {
@@ -20,22 +23,30 @@ public:
 signals:
 
 public slots:
+    void zoomIn();
+    void zoomOut();
+    void normalSize();
 
 protected:
     void UpdateFrame();
+
+private:
+    void scaleImage(double factor);
+    void adjustScrollBar(QScrollBar *scrollBar, double factor);
 
 private:
     // Label for show mat
     QLabel* pFrameBoard;
     // Main layout for this widget
     QGridLayout* pMainLayout;
-    QGridLayout* scrollAreaLayout;
     // QScroll Area
     QScrollArea* scrollArea;
 
     // Current frame
     cv::Mat currentFrame;
     QImage currentImage;
+
+    double scaleFactor;
 };
 
 #endif // FRAMEWINDOW_H

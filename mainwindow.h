@@ -2,6 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <opencv2/core.hpp>
+#include <opencv2/highgui.hpp>
+#include <opencv2/video.hpp>
 #include "framewindow.h"
 #include "QtAwesome.h"
 
@@ -48,6 +51,9 @@ private:
 
     // Save Video file full path
     QString VideoFilePath;
+
+    // Video Capture
+    cv::VideoCapture capture;
 
     QMenu *viewMenu;
 };

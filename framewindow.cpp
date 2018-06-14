@@ -1,9 +1,9 @@
 #include "framewindow.h"
 #include <opencv2/imgproc.hpp>
+#include <QDebug>
 
 FrameWindow::FrameWindow(QWidget *parent) : QWidget(parent)
 {
-
     // new frame board use qlabel and set object name
     this->pFrameBoard = new QLabel();
     this->pFrameBoard->setObjectName(QString::fromUtf8("FrameBorad"));
@@ -11,17 +11,12 @@ FrameWindow::FrameWindow(QWidget *parent) : QWidget(parent)
     this->pFrameBoard->setSizePolicy(QSizePolicy::Ignored,QSizePolicy::Ignored);
     this->pFrameBoard->setScaledContents(true);
 
-    this->scrollAreaLayout = new QGridLayout();
-    this->scrollAreaLayout->setObjectName(QString::fromUtf8("ScrollLayout"));
-    this->scrollAreaLayout->addWidget(this->pFrameBoard,0,0,1,1);
-
     // Scroll Area
     this->scrollArea = new QScrollArea(this);
     this->scrollArea->setBackgroundRole(QPalette::Dark);
     this->scrollArea->setWidget(this->pFrameBoard);
     this->scrollArea->setVisible(true);
     this->scrollArea->setAlignment(Qt::AlignCenter);
-    this->scrollArea->setLayout(this->scrollAreaLayout);
 
     // new main layout and set object name
     this->pMainLayout = new QGridLayout(this);
@@ -30,6 +25,9 @@ FrameWindow::FrameWindow(QWidget *parent) : QWidget(parent)
 
     // set layout for this widget
     this->setLayout(this->pMainLayout);
+
+    // set default scale
+    this->scaleFactor = 1.0;
 
 }
 
@@ -59,5 +57,36 @@ void FrameWindow::UpdateFrame()
     assert(this->currentFrame.isContinuous());
     this->currentImage = QImage(this->currentFrame.data, this->currentFrame.cols,this->currentFrame.rows,this->currentFrame.cols*3,QImage::Format_RGB888);
     this->pFrameBoard->setPixmap(QPixmap::fromImage(this->currentImage));
-    this->pFrameBoard->setFixedSize(this->currentFrame.cols, this->currentFrame.rows);
+    this->pFrameBoard->resize(QSize(this->currentFrame.cols, this->currentFrame.rows));
+}
+
+void FrameWindow::zoomIn()
+{
+    scaleImage(1.25);
+}
+
+void FrameWindow::zoomOut()
+{
+    scaleImage(0.8);
+}
+
+void FrameWindow::normalSize()
+{
+    this->pFrameBoard->adjustSize();
+    scaleFactor = 1.0;
+}
+
+void FrameWindow::scaleImage(double factor)
+{
+    Q_ASSERT(this->pFrameBoard->pixmap());
+
+    scaleFactor *= factor;
+    this->pFrameBoard->resize(this->scaleFactor * this->pFrameBoard->pixmap()->size());
+
+    adjustScrollBar(this->scrollArea->horizontalScrollBar(), factor);
+    adjustScrollBar(this->scrollArea->verticalScrollBar(), factor);
+}
+void FrameWindow::adjustScrollBar(QScrollBar *scrollBar, double factor)
+{
+    scrollBar->setValue(int(factor * scrollBar->value() + ((factor - 1) * scrollBar->pageStep()/2)));
 }

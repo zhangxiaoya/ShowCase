@@ -6,6 +6,7 @@
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/highgui.hpp>
+#include <opencv2/video.hpp>
 
 //! [1]
 MainWindow::MainWindow(QApplication* app)
@@ -15,7 +16,7 @@ MainWindow::MainWindow(QApplication* app)
     this->awesome->initFontAwesome();
 
     // set center window
-    this->centerFrameBoard = new FrameWindow();
+    this->centerFrameBoard = new FrameWindow(this);
     setCentralWidget(this->centerFrameBoard);
 
     // TODO--test
@@ -46,8 +47,19 @@ MainWindow::MainWindow(QApplication* app)
 void MainWindow::openVideoFile()
 {
     this->VideoFilePath = QFileDialog::getOpenFileName(this,
-                                                       tr("Open Video"), "/home/",
+                                                       tr("Open Video"), "",
                                                        tr("Video Files (*.avi *.mp4)"));
+
+    // set first frame
+    this->capture.open(this->VideoFilePath.toStdString());
+    if(!this->capture.isOpened())
+    {
+        QMessageBox::warning(this, tr("Info"), tr("Unable to open video file!"));
+        return;
+    }
+    cv::Mat firstFrame;
+    this->capture >>firstFrame;
+    this->centerFrameBoard->SetFrame(firstFrame);
 }
 //! [2]
 
@@ -58,26 +70,13 @@ void MainWindow::openVideoFile()
 //! [4]
 void MainWindow::runProcess()
 {
-    QMimeDatabase mimeDatabase;
-    QString fileName = QFileDialog::getSaveFileName(this,
-                                                    tr("Choose a file name"), ".",
-                                                    mimeDatabase.mimeTypeForName("text/html").filterString());
-    if (fileName.isEmpty())
-        return;
-    QFile file(fileName);
-    if (!file.open(QFile::WriteOnly | QFile::Text)) {
-        QMessageBox::warning(this, tr("Dock Widgets"),
-                             tr("Cannot write file %1:\n%2.")
-                             .arg(QDir::toNativeSeparators(fileName), file.errorString()));
-        return;
+    if(this->VideoFilePath.isEmpty() || !this->capture.isOpened())
+    {
+       QMessageBox::warning(this, tr("Warning"),tr("Place open one video file first!"));
+       return;
     }
 
-    QTextStream out(&file);
-    QApplication::setOverrideCursor(Qt::WaitCursor);
-    out << textEdit->toHtml();
-    QApplication::restoreOverrideCursor();
-
-    statusBar()->showMessage(tr("Saved '%1'").arg(fileName), 2000);
+    statusBar()->showMessage(tr("Processing..."));
 }
 //! [4]
 
@@ -184,7 +183,7 @@ void MainWindow::createActions()
     fileMenu->addSeparator();
 
     // create quit action and add to file menu
-    QAction *quitAct = fileMenu->addAction(this->awesome->icon(fa::timescircle),tr("&Quit"), this, &QWidget::close);
+    QAction *quitAct = fileMenu->addAction(this->awesome->icon(fa::poweroff),tr("&Quit"), this, &QWidget::close);
     quitAct->setShortcuts(QKeySequence::Quit);
     quitAct->setStatusTip(tr("Quit the Showcase Demo"));
 
@@ -208,6 +207,34 @@ void MainWindow::createActions()
     editMenu->addAction(settingAct);
     // add setting action to edit toolbar
     editToolBar->addAction(settingAct);
+
+    /**************************************************/
+    /*   Tool Menu and Toolbar                        */
+    /**************************************************/
+
+    QMenu *toolMenu = menuBar()->addMenu(tr("&Tools"));
+    QToolBar* toolToolBar = addToolBar(tr("Tool"));
+
+    QAction* zoomInAct = new QAction(this->awesome->icon(fa::searchplus), tr("Zoom&In"), this);
+    QAction* zoomOutAct = new QAction(this->awesome->icon(fa::searchminus), tr("Zoom&Out"), this);
+    QAction* normalSizeAct = new QAction(this->awesome->icon(fa::circle), tr("NormalSize"), this);
+    zoomInAct->setShortcuts(QKeySequence::ZoomIn);
+    zoomOutAct->setShortcuts(QKeySequence::ZoomOut);
+    normalSizeAct->setShortcut(tr("Ctrl+o"));
+    zoomInAct->setStatusTip(tr("ZoomIn"));
+    zoomOutAct->setStatusTip(tr("ZoomOut"));
+    normalSizeAct->setStatusTip(tr("NormalSize"));
+
+    connect(zoomInAct, &QAction::triggered, this->centerFrameBoard, &FrameWindow::zoomIn);
+    connect(zoomOutAct, &QAction::triggered, this->centerFrameBoard, &FrameWindow::zoomOut);
+    connect(normalSizeAct, &QAction::triggered, this->centerFrameBoard, &FrameWindow::normalSize);
+
+    toolMenu->addAction(zoomInAct);
+    toolMenu->addAction(zoomOutAct);
+    toolMenu->addAction(normalSizeAct);
+    toolToolBar->addAction(zoomInAct);
+    toolToolBar->addAction(zoomOutAct);
+    toolToolBar->addAction(normalSizeAct);
 
     /**************************************************/
     /*   View Menu and Toolbar                        */

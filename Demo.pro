@@ -26,4 +26,9 @@ HEADERS += \
 RESOURCES +=
 
 INCLUDEPATH += /usr/local/opencv3/include/
-LIBS += -L/usr/local/opencv3/lib/ -lopencv_core -lopencv_imgcodecs -lopencv_highgui -lopencv_imgproc
+LIBS += -L/usr/local/opencv3/lib/ \
+-lopencv_core \
+-lopencv_imgcodecs \
+-lopencv_highgui \
+-lopencv_imgproc \
+-lopencv_videoio
