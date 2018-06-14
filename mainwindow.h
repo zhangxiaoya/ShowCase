@@ -21,7 +21,7 @@ public:
 
 private slots:
     void openVideoFile();
-    void save();
+    void runProcess();
     void undo();
     void about();
     void insertCustomer(const QString &customer);

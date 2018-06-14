@@ -56,7 +56,7 @@ void MainWindow::openVideoFile()
 //! [3]
 
 //! [4]
-void MainWindow::save()
+void MainWindow::runProcess()
 {
     QMimeDatabase mimeDatabase;
     QString fileName = QFileDialog::getSaveFileName(this,
@@ -145,31 +145,30 @@ void MainWindow::about()
 
 void MainWindow::createActions()
 {
+    // create menu for file
     QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
+    // create tool bar for file
     QToolBar *fileToolBar = addToolBar(tr("File"));
 
+    // create open video file action and set propos for this action
     QAction *openVideoAct = new QAction(this->awesome->icon(fa::filevideoo), tr("&Open Video"), this);
     openVideoAct->setShortcuts(QKeySequence::Open);
     openVideoAct->setStatusTip(tr("Open One Video File"));
+
+    // connect signal of open file action to open video file slot
     connect(openVideoAct, &QAction::triggered, this, &MainWindow::openVideoFile);
+
+    // add openfile action to menu(file)
     fileMenu->addAction(openVideoAct);
+    // add openfile action to toolbar(file)
     fileToolBar->addAction(openVideoAct);
 
-    const QIcon saveIcon = QIcon::fromTheme("document-save", QIcon(":/images/save.png"));
-    QAction *saveAct = new QAction(saveIcon, tr("&Save..."), this);
-    saveAct->setShortcuts(QKeySequence::Save);
-    saveAct->setStatusTip(tr("Save the current form letter"));
-    connect(saveAct, &QAction::triggered, this, &MainWindow::save);
-    fileMenu->addAction(saveAct);
-    fileToolBar->addAction(saveAct);
-
-    //    const QIcon printIcon = QIcon::fromTheme("document-print", QIcon(":/images/print.png"));
-    //    QAction *printAct = new QAction(printIcon, tr("&Print..."), this);
-    //    printAct->setShortcuts(QKeySequence::Print);
-    //    printAct->setStatusTip(tr("Print the current form letter"));
-    //    connect(printAct, &QAction::triggered, this, &MainWindow::print);
-    //    fileMenu->addAction(printAct);
-    //    fileToolBar->addAction(printAct);
+    QAction *runAct = new QAction(this->awesome->icon(fa::play), tr("&Play"), this);
+    runAct->setShortcuts(QKeySequence::Refresh);
+    runAct->setStatusTip(tr("Run Process for current Video"));
+    connect(runAct, &QAction::triggered, this, &MainWindow::runProcess);
+    fileMenu->addAction(runAct);
+    fileToolBar->addAction(runAct);
 
     fileMenu->addSeparator();
 
