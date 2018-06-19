@@ -8,6 +8,8 @@
 #include <QScrollBar>
 #include <opencv2/core.hpp>
 
+#include <imagelabel.h>
+
 class QScrollBar;
 
 class FrameWindow : public QWidget
@@ -36,7 +38,7 @@ private:
 
 private:
     // Label for show mat
-    QLabel* pFrameBoard;
+    ImageLabel* pFrameBoard;
     // Main layout for this widget
     QGridLayout* pMainLayout;
     // QScroll Area

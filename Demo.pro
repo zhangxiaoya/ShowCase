@@ -18,12 +18,14 @@ SOURCES += \
         main.cpp \
     mainwindow.cpp \
     framewindow.cpp \
-    controlboard.cpp
+    controlboard.cpp \
+    imagelabel.cpp
 
 HEADERS += \
     mainwindow.h \
     framewindow.h \
-    controlboard.h
+    controlboard.h \
+    imagelabel.h
 
 RESOURCES +=
 

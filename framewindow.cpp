@@ -5,7 +5,7 @@
 FrameWindow::FrameWindow(QWidget *parent) : QWidget(parent)
 {
     // new frame board use qlabel and set object name
-    this->pFrameBoard = new QLabel();
+    this->pFrameBoard = new ImageLabel();
     this->pFrameBoard->setObjectName(QString::fromUtf8("FrameBorad"));
     this->pFrameBoard->setBackgroundRole(QPalette::Base);
     this->pFrameBoard->setSizePolicy(QSizePolicy::Ignored,QSizePolicy::Ignored);
