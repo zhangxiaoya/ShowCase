@@ -245,6 +245,12 @@ void MainWindow::createDockWindows()
     superResolutionFrameDock->setWidget(this->superResolutionFrameBorad);
     addDockWidget(Qt::RightDockWidgetArea, superResolutionFrameDock);
 
+    QDockWidget* controlBoradDock = new QDockWidget(tr("ControlBoard"), this);
+    controlBoradDock->setAllowedAreas(Qt::RightDockWidgetArea| Qt::LeftDockWidgetArea);
+    this->controlBoard = new ControlBoard(awesome, controlBoradDock);
+    controlBoradDock->setWidget(this->controlBoard);
+    addDockWidget(Qt::RightDockWidgetArea, controlBoradDock);
+
     setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
     setCorner(Qt::BottomLeftCorner,Qt::LeftDockWidgetArea);
 

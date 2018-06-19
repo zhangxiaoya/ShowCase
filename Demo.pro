@@ -17,11 +17,13 @@ include(QtAwesome/QtAwesome.pri)
 SOURCES += \
         main.cpp \
     mainwindow.cpp \
-    framewindow.cpp
+    framewindow.cpp \
+    controlboard.cpp
 
 HEADERS += \
     mainwindow.h \
-    framewindow.h
+    framewindow.h \
+    controlboard.h
 
 RESOURCES +=
 

@@ -7,6 +7,7 @@
 #include <opencv2/video.hpp>
 #include "framewindow.h"
 #include "QtAwesome.h"
+#include "controlboard.h"
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -42,6 +43,8 @@ private:
     // Dock Windows
     FrameWindow* enhencedFrameBorad;
     FrameWindow* superResolutionFrameBorad;
+
+    ControlBoard* controlBoard;
 
     // Center Window
     FrameWindow* centerFrameBoard;
