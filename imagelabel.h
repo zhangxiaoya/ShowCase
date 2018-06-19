@@ -22,6 +22,8 @@ public:
     void mouseReleaseEvent(QMouseEvent* event);
     void mouseMoveEvent(QMouseEvent* event);
 
+    void resizeBoundingBox(double factor);
+
 private:
     int begX;
     int begY;

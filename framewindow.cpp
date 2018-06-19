@@ -74,6 +74,7 @@ void FrameWindow::normalSize()
 {
     this->pFrameBoard->adjustSize();
     scaleFactor = 1.0;
+    this->pFrameBoard->resizeBoundingBox(scaleFactor);
 }
 
 void FrameWindow::scaleImage(double factor)
@@ -82,6 +83,7 @@ void FrameWindow::scaleImage(double factor)
 
     scaleFactor *= factor;
     this->pFrameBoard->resize(this->scaleFactor * this->pFrameBoard->pixmap()->size());
+    this->pFrameBoard->resizeBoundingBox(factor);
 
     adjustScrollBar(this->scrollArea->horizontalScrollBar(), factor);
     adjustScrollBar(this->scrollArea->verticalScrollBar(), factor);

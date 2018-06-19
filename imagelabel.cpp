@@ -30,7 +30,7 @@ void ImageLabel::mousePressEvent(QMouseEvent *event)
     begX = event->pos().x();
     begY = event->pos().y();
     QCursor cursor;
-    cursor.setShape(Qt::ClosedHandCursor);
+    cursor.setShape(Qt::CrossCursor);
     QApplication::setOverrideCursor(cursor);
 }
 
@@ -40,5 +40,12 @@ void ImageLabel::mouseReleaseEvent(QMouseEvent *event)
     endY = event->pos().y();
     update();
     QApplication::restoreOverrideCursor();
+}
 
+void ImageLabel::resizeBoundingBox(double factor)
+{
+    begX = static_cast<int>(static_cast<double>(begX) * factor);
+    endX = static_cast<int>(static_cast<double>(endX) * factor);
+    begY = static_cast<int>(static_cast<double>(begY) * factor);
+    endY = static_cast<int>(static_cast<double>(endY) * factor);
 }
