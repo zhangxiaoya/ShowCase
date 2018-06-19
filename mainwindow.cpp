@@ -83,54 +83,14 @@ void MainWindow::runProcess()
 //! [5]
 void MainWindow::setting()
 {
-    QTextDocument *document = textEdit->document();
-    document->undo();
 }
 //! [5]
 
 //! [6]
-void MainWindow::insertCustomer(const QString &customer)
-{
-    if (customer.isEmpty())
-        return;
-    QStringList customerList = customer.split(", ");
-    QTextDocument *document = textEdit->document();
-    QTextCursor cursor = document->find("NAME");
-    if (!cursor.isNull()) {
-        cursor.beginEditBlock();
-        cursor.insertText(customerList.at(0));
-        QTextCursor oldcursor = cursor;
-        cursor = document->find("ADDRESS");
-        if (!cursor.isNull()) {
-            for (int i = 1; i < customerList.size(); ++i) {
-                cursor.insertBlock();
-                cursor.insertText(customerList.at(i));
-            }
-            cursor.endEditBlock();
-        }
-        else
-            oldcursor.endEditBlock();
-    }
-}
 //! [6]
 
 //! [7]
-void MainWindow::addParagraph(const QString &paragraph)
-{
-    if (paragraph.isEmpty())
-        return;
-    QTextDocument *document = textEdit->document();
-    QTextCursor cursor = document->find(tr("Yours sincerely,"));
-    if (cursor.isNull())
-        return;
-    cursor.beginEditBlock();
-    cursor.movePosition(QTextCursor::PreviousBlock, QTextCursor::MoveAnchor, 2);
-    cursor.insertBlock();
-    cursor.insertText(paragraph);
-    cursor.insertBlock();
-    cursor.endEditBlock();
 
-}
 //! [7]
 
 void MainWindow::about()
@@ -264,16 +224,6 @@ void MainWindow::createStatusBar()
 //! [9]
 void MainWindow::createDockWindows()
 {
-    QDockWidget *textWidgetDock = new QDockWidget(tr("Text"), this);
-    textWidgetDock->setAllowedAreas(Qt::BottomDockWidgetArea |
-                                    Qt::TopDockWidgetArea |
-                                    Qt::RightDockWidgetArea |
-                                    Qt::LeftDockWidgetArea);
-    this->textEdit = new QTextEdit(textWidgetDock);
-    this->textEdit->setMinimumHeight(300);
-    textWidgetDock->setWidget(this->textEdit);
-    addDockWidget(Qt::BottomDockWidgetArea, textWidgetDock);
-
     QDockWidget *enhencedFrameDock = new QDockWidget(tr("EnhencedFrame"), this);
     enhencedFrameDock->setAllowedAreas(Qt::BottomDockWidgetArea |
                                        Qt::TopDockWidgetArea |
@@ -284,66 +234,20 @@ void MainWindow::createDockWindows()
     enhencedFrameDock->setWidget(this->enhencedFrameBorad);
     addDockWidget(Qt::BottomDockWidgetArea, enhencedFrameDock);
 
-    QDockWidget *imageBoradDock = new QDockWidget(tr("ImageBoard"), this);
-    imageBoradDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    this->originalFrameBoard = new FrameWindow(imageBoradDock);
-    this->originalFrameBoard->setMinimumWidth(200);
-    imageBoradDock->setWidget(this->originalFrameBoard);
-    addDockWidget(Qt::LeftDockWidgetArea, imageBoradDock);
-
-    // TO-DO test
-    cv::Mat img = cv::imread("/home/runisys/Desktop/data/OpenCVImageData/data/lena.jpg");
-    if(!img.empty())
-    {
-        this->enhencedFrameBorad->SetFrame(img);
-        this->originalFrameBoard->SetFrame(img);
-    }
+    QDockWidget *superResolutionFrameDock = new QDockWidget(tr("SuperResolutionFrame"), this);
+    superResolutionFrameDock->setAllowedAreas(Qt::BottomDockWidgetArea |
+                                       Qt::TopDockWidgetArea |
+                                       Qt::RightDockWidgetArea |
+                                       Qt::LeftDockWidgetArea);
+    this->superResolutionFrameBorad = new FrameWindow(superResolutionFrameDock);
+    this->superResolutionFrameBorad->setMinimumHeight(300);
+    this->superResolutionFrameBorad->setMinimumWidth(300);
+    superResolutionFrameDock->setWidget(this->superResolutionFrameBorad);
+    addDockWidget(Qt::RightDockWidgetArea, superResolutionFrameDock);
 
     setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
     setCorner(Qt::BottomLeftCorner,Qt::LeftDockWidgetArea);
 
-    QDockWidget *customersDock = new QDockWidget(tr("Customers"), this);
-    customersDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    customerList = new QListWidget(customersDock);
-    customerList->addItems(QStringList()
-                           << "John Doe, Harmony Enterprises, 12 Lakeside, Ambleton"
-                           << "Jane Doe, Memorabilia, 23 Watersedge, Beaton"
-                           << "Tammy Shea, Tiblanka, 38 Sea Views, Carlton"
-                           << "Tim Sheen, Caraba Gifts, 48 Ocean Way, Deal"
-                           << "Sol Harvey, Chicos Coffee, 53 New Springs, Eccleston"
-                           << "Sally Hobart, Tiroli Tea, 67 Long River, Fedula");
-    customersDock->setWidget(customerList);
-    addDockWidget(Qt::RightDockWidgetArea, customersDock);
-    viewMenu->addAction(customersDock->toggleViewAction());
-
-    QDockWidget *paragraphsDock = new QDockWidget(tr("Paragraphs"), this);
-    paragraphsDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    paragraphsList = new QListWidget(paragraphsDock);
-    paragraphsList->addItems(QStringList()
-                             << "Thank you for your payment which we have received today."
-                             << "Your order has been dispatched and should be with you "
-                                "within 28 days."
-                             << "We have dispatched those items that were in stock. The "
-                                "rest of your order will be dispatched once all the "
-                                "remaining items have arrived at our warehouse. No "
-                                "additional shipping charges will be made."
-                             << "You made a small overpayment (less than $5) which we "
-                                "will keep on account for you, or return at your request."
-                             << "You made a small underpayment (less than $1), but we have "
-                                "sent your order anyway. We'll add this underpayment to "
-                                "your next bill."
-                             << "Unfortunately you did not send enough money. Please remit "
-                                "an additional $. Your order will be dispatched as soon as "
-                                "the complete amount has been received."
-                             << "You made an overpayment (more than $5). Do you wish to "
-                                "buy more items, or should we return the excess to you?");
-    paragraphsDock->setWidget(paragraphsList);
-    addDockWidget(Qt::RightDockWidgetArea, paragraphsDock);
-    viewMenu->addAction(paragraphsDock->toggleViewAction());
-
-    connect(customerList, &QListWidget::currentTextChanged,
-            this, &MainWindow::insertCustomer);
-    connect(paragraphsList, &QListWidget::currentTextChanged,
-            this, &MainWindow::addParagraph);
+    viewMenu->addAction(enhencedFrameDock->toggleViewAction());
 }
 //! [9]

@@ -27,15 +27,12 @@ private slots:
     void runProcess();
     void setting();
     void about();
-    void insertCustomer(const QString &customer);
-    void addParagraph(const QString &paragraph);
 
 private:
     void createActions();
     void createStatusBar();
     void createDockWindows();
 
-    QTextEdit *textEdit;
     QListWidget *customerList;
     QListWidget *paragraphsList;
 
@@ -43,8 +40,8 @@ private:
     QtAwesome* awesome;
 
     // Dock Windows
-    FrameWindow* originalFrameBoard;
     FrameWindow* enhencedFrameBorad;
+    FrameWindow* superResolutionFrameBorad;
 
     // Center Window
     FrameWindow* centerFrameBoard;
