@@ -25,13 +25,6 @@ MainWindow::MainWindow(QApplication* app)
     this->centerFrameBoard = new FrameWindow(this);
     setCentralWidget(this->centerFrameBoard);
 
-    // TODO--test
-    cv::Mat img = cv::imread("/home/runisys/Desktop/data/OpenCVImageData/data/lena.jpg");
-    if(!img.empty())
-    {
-        this->centerFrameBoard->SetFrame(img);
-    }
-
     // default video path
     this->VideoFilePath = tr("");
 
