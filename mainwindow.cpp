@@ -34,8 +34,10 @@ MainWindow::MainWindow(QApplication* app)
 
     // set windows title
     setWindowTitle(tr("ShowCase Demo"));
-
     setUnifiedTitleAndToolBarOnMac(true);
+
+    // Disable Tools
+    DisableZoomActions(true);
 
     // set maximize window by default
     this->setWindowState(Qt::WindowMaximized);
@@ -70,6 +72,9 @@ void MainWindow::openVideoFile()
 
     // set default finish flag
     isFinished = false;
+
+    // Enable Tools
+    DisableZoomActions(false);
 }
 //! [2]
 
