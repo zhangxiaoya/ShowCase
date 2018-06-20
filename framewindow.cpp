@@ -55,7 +55,11 @@ void FrameWindow::SetFrame(cv::Mat &frame)
 void FrameWindow::UpdateFrame()
 {
     assert(this->currentFrame.isContinuous());
-    this->currentImage = QImage(this->currentFrame.data, this->currentFrame.cols,this->currentFrame.rows,this->currentFrame.cols*3,QImage::Format_RGB888);
+    this->currentImage = QImage(this->currentFrame.data,
+                                this->currentFrame.cols,
+                                this->currentFrame.rows,
+                                this->currentFrame.cols*3,
+                                QImage::Format_RGB888);
     this->pFrameBoard->setPixmap(QPixmap::fromImage(this->currentImage));
     this->pFrameBoard->resize(QSize(this->currentFrame.cols, this->currentFrame.rows) * this->scaleFactor);
 }

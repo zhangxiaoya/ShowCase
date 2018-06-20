@@ -1,4 +1,3 @@
-
 #include <QtWidgets>
 #include <QDebug>
 
@@ -9,8 +8,11 @@
 #include <opencv2/video.hpp>
 #include <thread>
 
+// Global variables for thread
 static std::mutex FrameMutex;
+static std::mutex FinishFlagMutex;
 static cv::Mat frame;
+static bool isFinished;
 
 //! [1]
 MainWindow::MainWindow(QApplication* app)
@@ -44,6 +46,10 @@ MainWindow::MainWindow(QApplication* app)
 
     // set maximize window by default
     this->setWindowState(Qt::WindowMaximized);
+
+    // Custom SLOT and SIGNAL
+    connect(this, SIGNAL(ShowFinishMessageSignal()), this, SLOT(ShowFinishedMessageSlot()));   // ShowFinish Message
+    connect(this, SIGNAL(ShowFinishStatusSignal()), this, SLOT(ShowFinishedStatusSlot()));
 }
 //! [1]
 
@@ -53,6 +59,10 @@ void MainWindow::openVideoFile()
     this->VideoFilePath = QFileDialog::getOpenFileName(this,
                                                        tr("Open Video"), "",
                                                        tr("Video Files (*.avi *.mp4)"));
+    if(this->VideoFilePath.isEmpty())
+    {
+        return;
+    }
 
     // set first frame
     this->capture.open(this->VideoFilePath.toStdString());
@@ -64,33 +74,55 @@ void MainWindow::openVideoFile()
     cv::Mat firstFrame;
     this->capture >>firstFrame;
     this->centerFrameBoard->SetFrame(firstFrame);
+
+    // set default finish flag
+    isFinished = false;
 }
 //! [2]
 
 //! [3]
+void MainWindow::Finished(MainWindow *mainWindow)
+{
+    FinishFlagMutex.lock();
+    while (!isFinished)
+    {
+        FinishFlagMutex.unlock();
+        std::this_thread::sleep_for(std::chrono::microseconds(10));
+    }
 
+    // if finished ...
+    mainWindow->DisableZoomActions(false);
+    mainWindow->DisableFileActions(false);
+    emit mainWindow->ShowFinishedStatusSlot();
+    emit mainWindow->ShowFinishMessageSignal();
+}
 //! [3]
 
 //! [4]
 void MainWindow::runProcess()
 {
+    // Check
     if(this->VideoFilePath.isEmpty() || !this->capture.isOpened())
     {
        QMessageBox::warning(this, tr("Warning"),tr("Place open one video file first!"));
        return;
     }
 
+    // Disable some actions
+    DisableZoomActions(true);
+    DisableFileActions(true);
+
+    // Update status
     statusBar()->showMessage(tr("Processing..."));
 
-
-
+    // Luanch threads read, show and finished
     this->pReadFrameThread = new std::thread(ReadFrame, &(this->capture));
     this->pShowFrameThread = new std::thread(ShowFrame, centerFrameBoard);
-
-    statusBar()->showMessage(tr("Done!"));
+    this->pFinishedThread = new std::thread(Finished, this);
 }
 //! [4]
 
+//! [5]
 void MainWindow::ReadFrame(cv::VideoCapture* pcapture)
 {
     while(true)
@@ -103,10 +135,12 @@ void MainWindow::ReadFrame(cv::VideoCapture* pcapture)
             break;
         }
         FrameMutex.unlock();
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        std::this_thread::sleep_for(std::chrono::microseconds(10));
     }
 }
+//! [5]
 
+//! [6]
 void MainWindow::ShowFrame(FrameWindow* frameWindow)
 {
     while(true)
@@ -114,28 +148,33 @@ void MainWindow::ShowFrame(FrameWindow* frameWindow)
         FrameMutex.lock();
         if(frame.empty())
         {
+            FinishFlagMutex.lock();
+            isFinished = true;
+            FinishFlagMutex.unlock();
             FrameMutex.unlock();
             break;
         }
         frameWindow->SetFrame(frame);
         FrameMutex.unlock();
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        std::this_thread::sleep_for(std::chrono::microseconds(10));
     }
 }
+//! [6]
 
-//! [5]
+//! [7]
 void MainWindow::setting()
 {
 }
-//! [5]
-
-//! [6]
-//! [6]
-
 //! [7]
 
-//! [7]
+//! [8]
+void MainWindow::ShowFinishedMessageSlot()
+{
+    QMessageBox::information(this, tr("Information"),tr("All Done!"));
+}
+//! [8]
 
+//! [9]
 void MainWindow::about()
 {
     QMessageBox::about(this, tr("About Showcase Demo"),
@@ -144,7 +183,9 @@ void MainWindow::about()
                           "And this just a showcase for part of algorithm, "
                           "the complete solution place contact me."));
 }
+//! [9]
 
+//! [10]
 void MainWindow::createActions()
 {
     /**************************************************/
@@ -157,7 +198,7 @@ void MainWindow::createActions()
     QToolBar *fileToolBar = addToolBar(tr("File"));
 
     // create open video file action and set props for this action
-    QAction *openVideoAct = new QAction(this->awesome->icon(fa::filevideoo), tr("&Open Video"), this);
+    openVideoAct = new QAction(this->awesome->icon(fa::filevideoo), tr("&Open Video"), this);
     openVideoAct->setShortcuts(QKeySequence::Open);
     openVideoAct->setStatusTip(tr("Open One Video File"));
 
@@ -170,7 +211,7 @@ void MainWindow::createActions()
     fileToolBar->addAction(openVideoAct);
 
     // create play action and set props
-    QAction *runAct = new QAction(this->awesome->icon(fa::play), tr("&Play"), this);
+    runAct = new QAction(this->awesome->icon(fa::play), tr("&Play"), this);
     runAct->setShortcuts(QKeySequence::Refresh);
     runAct->setStatusTip(tr("Run Process for current Video"));
 
@@ -218,9 +259,10 @@ void MainWindow::createActions()
     QMenu *toolMenu = menuBar()->addMenu(tr("&Tools"));
     QToolBar* toolToolBar = addToolBar(tr("Tool"));
 
-    QAction* zoomInAct = new QAction(this->awesome->icon(fa::searchplus), tr("Zoom&In"), this);
-    QAction* zoomOutAct = new QAction(this->awesome->icon(fa::searchminus), tr("Zoom&Out"), this);
-    QAction* normalSizeAct = new QAction(this->awesome->icon(fa::circle), tr("NormalSize"), this);
+    zoomInAct = new QAction(this->awesome->icon(fa::searchplus), tr("Zoom&In"), this);
+    zoomOutAct = new QAction(this->awesome->icon(fa::searchminus), tr("Zoom&Out"), this);
+    normalSizeAct = new QAction(this->awesome->icon(fa::circle), tr("NormalSize"), this);
+
     zoomInAct->setShortcuts(QKeySequence::ZoomIn);
     zoomOutAct->setShortcuts(QKeySequence::ZoomOut);
     normalSizeAct->setShortcut(tr("Ctrl+o"));
@@ -256,15 +298,16 @@ void MainWindow::createActions()
     QAction *aboutQtAct = helpMenu->addAction(tr("About &Qt"), qApp, &QApplication::aboutQt);
     aboutQtAct->setStatusTip(tr("Show the Qt library's About box"));
 }
+//! [10]
 
-//! [8]
+//! [11]
 void MainWindow::createStatusBar()
 {
     statusBar()->showMessage(tr("Ready"));
 }
-//! [8]
+//! [11]
 
-//! [9]
+//! [12]
 void MainWindow::createDockWindows()
 {
     QDockWidget *enhencedFrameDock = new QDockWidget(tr("EnhencedFrame"), this);
@@ -294,9 +337,34 @@ void MainWindow::createDockWindows()
     controlBoradDock->setWidget(this->controlBoard);
     addDockWidget(Qt::RightDockWidgetArea, controlBoradDock);
 
+    // set corner to right and left
     setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
     setCorner(Qt::BottomLeftCorner,Qt::LeftDockWidgetArea);
 
     viewMenu->addAction(enhencedFrameDock->toggleViewAction());
 }
-//! [9]
+
+//! [13]
+void MainWindow::DisableZoomActions(bool flag)
+{
+    this->zoomInAct->setDisabled(flag);
+    this->zoomOutAct->setDisabled(flag);
+    this->normalSizeAct->setDisabled(flag);
+}
+//! [13]
+
+//! [14]
+void MainWindow::DisableFileActions(bool flag)
+{
+    this->openVideoAct->setDisabled(flag);
+    this->runAct->setDisabled(flag);
+}
+//! [14]
+
+//! [15]
+void MainWindow::ShowFinishedStatusSlot()
+{
+    // Crashed !!! TODO
+//    statusBar()->showMessage(tr("Done!"));
+}
+//! [15]

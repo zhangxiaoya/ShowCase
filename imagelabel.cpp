@@ -1,6 +1,10 @@
 #include "imagelabel.h"
 
-ImageLabel::ImageLabel()
+ImageLabel::ImageLabel():
+    begX(0),
+    begY(0),
+    endX(0),
+    endY(0)
 {
 
 }
@@ -9,8 +13,10 @@ void ImageLabel::paintEvent(QPaintEvent *event)
 {
     QLabel::paintEvent(event); //绘制背景的图片
 
-    QPainter painter(this);
+    if((begX ==0 && endX == 0) ||(begY == 0 && endY == 0))
+        return;
 
+    QPainter painter(this);
     painter.setPen(QPen(Qt::red, 2));
     painter.drawRect(QRect(begX, begY, endX - begX, endY - begY));
 }

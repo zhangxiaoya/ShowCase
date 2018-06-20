@@ -30,14 +30,26 @@ private slots:
     void runProcess();
     void setting();
     void about();
+    void ShowFinishedMessageSlot();
+    void ShowFinishedStatusSlot();
+
+signals:
+    void ShowFinishMessageSignal();
+    void ShowFinishStatusSignal();
 
 private:
     void createActions();
     void createStatusBar();
     void createDockWindows();
 
+    void DisableZoomActions(bool flag);
+    void DisableFileActions(bool flag);
+
+
+    // declare thread funcs
     static void ReadFrame(cv::VideoCapture* pcapture);
     static void ShowFrame(FrameWindow* frameWindow);
+    static void Finished(MainWindow* mainWindow);
 
     QListWidget *customerList;
     QListWidget *paragraphsList;
@@ -63,8 +75,17 @@ private:
     // Read frame thread
     std::thread* pReadFrameThread;
     std::thread* pShowFrameThread;
+    std::thread* pFinishedThread;
 
+    // declare menus
     QMenu *viewMenu;
+
+    // declare actions
+    QAction* zoomInAct;
+    QAction* zoomOutAct;
+    QAction* normalSizeAct;
+    QAction *openVideoAct;
+    QAction *runAct;
 };
 
 #endif
