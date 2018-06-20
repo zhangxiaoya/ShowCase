@@ -72,9 +72,13 @@ void FrameWindow::zoomOut()
 
 void FrameWindow::normalSize()
 {
+    double basicWidth =  static_cast<double>(this->currentFrame.cols);
+    double currentWidth = static_cast<double>(this->pFrameBoard->size().width());
+    double rescaleFactor = basicWidth / currentWidth;
+
     this->pFrameBoard->adjustSize();
+    this->pFrameBoard->resizeBoundingBox(rescaleFactor);
     scaleFactor = 1.0;
-    this->pFrameBoard->resizeBoundingBox(scaleFactor);
 }
 
 void FrameWindow::scaleImage(double factor)
