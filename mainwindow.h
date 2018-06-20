@@ -51,8 +51,7 @@ private:
     static void ShowFrame(FrameWindow* frameWindow);
     static void Finished(MainWindow* mainWindow);
 
-    QListWidget *customerList;
-    QListWidget *paragraphsList;
+    QListWidget *logList;
 
     // QtAwesome
     QtAwesome* awesome;

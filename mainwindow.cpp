@@ -335,6 +335,16 @@ void MainWindow::createDockWindows()
     controlBoradDock->setWidget(this->controlBoard);
     addDockWidget(Qt::RightDockWidgetArea, controlBoradDock);
 
+    QDockWidget* logDock = new QDockWidget(tr("Logs"), this);
+    logDock->setAllowedAreas(Qt::BottomDockWidgetArea |
+                             Qt::TopDockWidgetArea |
+                             Qt::RightDockWidgetArea |
+                             Qt::LeftDockWidgetArea);
+    this->logList = new QListWidget(logDock);
+    this->logList->setMinimumHeight(100);
+    logDock->setWidget(this->logList);
+    addDockWidget(Qt::RightDockWidgetArea, logDock);
+
     // set corner to right and left
     setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
     setCorner(Qt::BottomLeftCorner,Qt::LeftDockWidgetArea);
