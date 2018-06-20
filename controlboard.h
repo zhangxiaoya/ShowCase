@@ -8,6 +8,8 @@
 
 #include <QPushButton>
 #include <QLabel>
+#include <QSpinBox>
+#include <QGroupBox>
 
 class ControlBoard : public QWidget
 {
@@ -19,8 +21,22 @@ signals:
 
 public slots:
 private:
-    QPushButton* BoundingBox;
-    QLabel* Box;
+    QGroupBox* topGroup;
+
+    QPushButton* BoundingBoxButton;
+    QLabel* BoundingBoxLabel;
+
+    QGroupBox* boundingBoxGroup;
+
+    QLabel* begXLabel;
+    QLabel* begYLabel;
+    QLabel* endXLabel;
+    QLabel* endYLabel;
+
+    QSpinBox* begXSpinBox;
+    QSpinBox* begYSpinBox;
+    QSpinBox* endXSpinBox;
+    QSpinBox* endYSpinBox;
 
     QtAwesome* awesome;
 };
