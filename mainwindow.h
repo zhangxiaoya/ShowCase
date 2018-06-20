@@ -8,6 +8,8 @@
 #include "framewindow.h"
 #include "QtAwesome.h"
 #include "controlboard.h"
+#include <thread>
+#include <mutex>
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -34,6 +36,9 @@ private:
     void createStatusBar();
     void createDockWindows();
 
+    static void ReadFrame(cv::VideoCapture* pcapture);
+    static void ShowFrame(FrameWindow* frameWindow);
+
     QListWidget *customerList;
     QListWidget *paragraphsList;
 
@@ -54,6 +59,10 @@ private:
 
     // Video Capture
     cv::VideoCapture capture;
+
+    // Read frame thread
+    std::thread* pReadFrameThread;
+    std::thread* pShowFrameThread;
 
     QMenu *viewMenu;
 };

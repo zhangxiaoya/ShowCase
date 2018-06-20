@@ -7,6 +7,10 @@
 #include <opencv2/imgproc.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/video.hpp>
+#include <thread>
+
+static std::mutex FrameMutex;
+static cv::Mat frame;
 
 //! [1]
 MainWindow::MainWindow(QApplication* app)
@@ -77,8 +81,47 @@ void MainWindow::runProcess()
     }
 
     statusBar()->showMessage(tr("Processing..."));
+
+
+
+    this->pReadFrameThread = new std::thread(ReadFrame, &(this->capture));
+    this->pShowFrameThread = new std::thread(ShowFrame, centerFrameBoard);
+
+    statusBar()->showMessage(tr("Done!"));
 }
 //! [4]
+
+void MainWindow::ReadFrame(cv::VideoCapture* pcapture)
+{
+    while(true)
+    {
+        FrameMutex.lock();
+        pcapture->read(frame);
+        if(frame.empty())
+        {
+            FrameMutex.unlock();
+            break;
+        }
+        FrameMutex.unlock();
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+}
+
+void MainWindow::ShowFrame(FrameWindow* frameWindow)
+{
+    while(true)
+    {
+        FrameMutex.lock();
+        if(frame.empty())
+        {
+            FrameMutex.unlock();
+            break;
+        }
+        frameWindow->SetFrame(frame);
+        FrameMutex.unlock();
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+}
 
 //! [5]
 void MainWindow::setting()
