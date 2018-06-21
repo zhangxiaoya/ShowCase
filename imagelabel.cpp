@@ -41,9 +41,6 @@ void ImageLabel::mousePressEvent(QMouseEvent *event)
 
     begX = event->pos().x();
     begY = event->pos().y();
-    QCursor cursor;
-    cursor.setShape(Qt::CrossCursor);
-    QApplication::setOverrideCursor(cursor);
 }
 
 void ImageLabel::mouseReleaseEvent(QMouseEvent *event)
@@ -53,7 +50,6 @@ void ImageLabel::mouseReleaseEvent(QMouseEvent *event)
     endX = event->pos().x(); //鼠标相对于所在控件的位置
     endY = event->pos().y();
     update();
-    QApplication::restoreOverrideCursor();
 }
 
 void ImageLabel::resizeBoundingBox(double factor)
@@ -67,4 +63,14 @@ void ImageLabel::resizeBoundingBox(double factor)
 void ImageLabel::SetDrawFlag(const bool flag)
 {
     this->drawFlag = flag;
+    if(flag)
+    {
+        QCursor cursor;
+        cursor.setShape(Qt::CrossCursor);
+        QApplication::setOverrideCursor(cursor);
+    }
+    else
+    {
+        QApplication::restoreOverrideCursor();
+    }
 }
