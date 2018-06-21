@@ -22,6 +22,8 @@ public:
 
     void SetFrame(cv::Mat& frame);
 
+    void SetDrawFlag(const bool flag);
+
 signals:
 
 public slots:
@@ -48,6 +50,7 @@ private:
     cv::Mat currentFrame;
     QImage currentImage;
 
+    // zoom factor
     double scaleFactor;
 };
 

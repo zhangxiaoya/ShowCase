@@ -28,7 +28,6 @@ FrameWindow::FrameWindow(QWidget *parent) : QWidget(parent)
 
     // set default scale
     this->scaleFactor = 1.0;
-
 }
 
 FrameWindow::~FrameWindow()
@@ -96,7 +95,13 @@ void FrameWindow::scaleImage(double factor)
     adjustScrollBar(this->scrollArea->horizontalScrollBar(), factor);
     adjustScrollBar(this->scrollArea->verticalScrollBar(), factor);
 }
+
 void FrameWindow::adjustScrollBar(QScrollBar *scrollBar, double factor)
 {
     scrollBar->setValue(int(factor * scrollBar->value() + ((factor - 1) * scrollBar->pageStep()/2)));
+}
+
+void FrameWindow::SetDrawFlag(const bool flag)
+{
+    this->pFrameBoard->SetDrawFlag(flag);
 }

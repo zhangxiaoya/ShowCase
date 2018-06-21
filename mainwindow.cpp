@@ -45,6 +45,9 @@ MainWindow::MainWindow(QApplication* app)
     // Custom SLOT and SIGNAL
     connect(this, SIGNAL(ShowFinishMessageSignal()), this, SLOT(ShowFinishedMessageSlot()));   // ShowFinish Message
     connect(this, SIGNAL(ShowFinishStatusSignal()), this, SLOT(ShowFinishedStatusSlot()));
+
+    connect(this->controlBoard, &ControlBoard::enableDrawBoxSingal, this, &MainWindow::enableDrawBox);
+    connect(this->controlBoard, &ControlBoard::disableDrawBoxSignal, this, &MainWindow::disableDrawBox);
 }
 //! [1]
 
@@ -379,3 +382,13 @@ void MainWindow::ShowFinishedStatusSlot()
 //    statusBar()->showMessage(tr("Done!"));
 }
 //! [15]
+
+void MainWindow::enableDrawBox()
+{
+    this->centerFrameBoard->SetDrawFlag(true);
+}
+
+void MainWindow::disableDrawBox()
+{
+    this->centerFrameBoard->SetDrawFlag(false);
+}

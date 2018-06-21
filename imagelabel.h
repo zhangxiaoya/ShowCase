@@ -24,11 +24,15 @@ public:
 
     void resizeBoundingBox(double factor);
 
+    void SetDrawFlag(const bool flag);
+
 private:
     int begX;
     int begY;
     int endX;
     int endY;
+
+    bool drawFlag;
 };
 
 #endif // IMAGELABEL_H

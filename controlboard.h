@@ -18,12 +18,18 @@ public:
     explicit ControlBoard(QtAwesome* awesome, QWidget *parent = nullptr);
 
 signals:
+    void enableDrawBoxSingal();
+    void disableDrawBoxSignal();
 
-public slots:
+private slots:
+    void DrawBoundingBoxButtonClicked();
+    void CancelDrawBoxButtonClicked();
+
 private:
     QGroupBox* topGroup;
 
     QPushButton* BoundingBoxButton;
+    QPushButton* CancelButton;
     QLabel* BoundingBoxLabel;
 
     QGroupBox* boundingBoxGroup;

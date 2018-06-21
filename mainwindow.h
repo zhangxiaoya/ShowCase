@@ -25,6 +25,10 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QApplication* app);
 
+public:
+    void enableDrawBox();
+    void disableDrawBox();
+
 private slots:
     void openVideoFile();
     void runProcess();
