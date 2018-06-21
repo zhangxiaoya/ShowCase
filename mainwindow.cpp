@@ -93,6 +93,9 @@ void MainWindow::Finished(MainWindow *mainWindow)
     mainWindow->DisableFileActions(false);
     emit mainWindow->ShowFinishedStatusSlot();
     emit mainWindow->ShowFinishMessageSignal();
+
+    mainWindow->VideoFilePath.clear();
+    mainWindow->capture.release();
 }
 //! [3]
 
