@@ -33,6 +33,7 @@ ControlBoard::ControlBoard(QtAwesome* awesome, QWidget *parent) : QWidget(parent
     // beg X
     this->begXLabel = new QLabel(tr("Top Left X: "), this->boundingBoxGroup);
     this->begXSpinBox = new QSpinBox(this->boundingBoxGroup);
+    this->begXSpinBox->setRange(0,2000);
     this->begXLabel->setBuddy(this->begXSpinBox);
     QHBoxLayout * begXLayout = new QHBoxLayout;
     begXLayout->addWidget(this->begXLabel);
@@ -43,6 +44,7 @@ ControlBoard::ControlBoard(QtAwesome* awesome, QWidget *parent) : QWidget(parent
     this->begYLabel = new QLabel(tr("Top Left Y: "), this->boundingBoxGroup);
     this->begYSpinBox = new QSpinBox(this->boundingBoxGroup);
     this->begYLabel->setBuddy(this->begYSpinBox);
+    this->begYSpinBox->setRange(0,2000);
     QHBoxLayout * begYLayout = new QHBoxLayout;
     begYLayout->addWidget(this->begYLabel);
     begYLayout->addWidget(this->begYSpinBox);
@@ -51,6 +53,7 @@ ControlBoard::ControlBoard(QtAwesome* awesome, QWidget *parent) : QWidget(parent
     // end X
     this->endXLabel = new QLabel(tr("Bottom Right X: "), this->boundingBoxGroup);
     this->endXSpinBox = new QSpinBox(this->boundingBoxGroup);
+    this->endXSpinBox->setRange(0,2000);
     this->endXLabel->setBuddy(this->endXSpinBox);
     QHBoxLayout * endXLayout = new QHBoxLayout;
     endXLayout->addWidget(this->endXLabel);
@@ -60,6 +63,7 @@ ControlBoard::ControlBoard(QtAwesome* awesome, QWidget *parent) : QWidget(parent
     // end Y
     this->endYLabel = new QLabel(tr("Bottom Right Y: "), this->boundingBoxGroup);
     this->endYSpinBox = new QSpinBox(this->boundingBoxGroup);
+    this->endYSpinBox->setRange(0,2000);
     this->endYLabel->setBuddy(this->endYSpinBox);
     QHBoxLayout * endYLayout = new QHBoxLayout;
     endYLayout->addWidget(this->endYLabel);
@@ -93,4 +97,12 @@ void ControlBoard::CancelDrawBoxButtonClicked()
     this->CancelButton->setDisabled(true);
     this->BoundingBoxButton->setEnabled(true);
     emit disableDrawBoxSignal();
+}
+
+void ControlBoard::SetBoundingBox(const BoundingBox &box)
+{
+    this->begXSpinBox->setValue(box.begX());
+    this->begYSpinBox->setValue(box.begY());
+    this->endXSpinBox->setValue(box.endX());
+    this->endYSpinBox->setValue(box.endY());
 }

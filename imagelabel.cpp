@@ -1,6 +1,7 @@
 #include "imagelabel.h"
 
-ImageLabel::ImageLabel():
+ImageLabel::ImageLabel(QWidget* parent):
+    QLabel(parent),
     begX(0),
     begY(0),
     endX(0),
@@ -50,6 +51,8 @@ void ImageLabel::mouseReleaseEvent(QMouseEvent *event)
     endX = event->pos().x(); //鼠标相对于所在控件的位置
     endY = event->pos().y();
     update();
+    BoundingBox box(begX,begY, endX,endY);
+    emit this->finishDraw(box);
 }
 
 void ImageLabel::resizeBoundingBox(double factor)

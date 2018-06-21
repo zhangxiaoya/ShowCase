@@ -11,10 +11,13 @@
 #include <QLabel>
 #include <QMouseEvent>
 
+#include "boundingbox.h"
+
 class ImageLabel : public QLabel
 {
+    Q_OBJECT
 public:
-    ImageLabel();
+    ImageLabel(QWidget* parent =nullptr);
 
     void paintEvent(QPaintEvent* event);
 
@@ -25,6 +28,9 @@ public:
     void resizeBoundingBox(double factor);
 
     void SetDrawFlag(const bool flag);
+
+signals:
+    void finishDraw(BoundingBox& box);
 
 private:
     int begX;

@@ -48,6 +48,8 @@ MainWindow::MainWindow(QApplication* app)
 
     connect(this->controlBoard, &ControlBoard::enableDrawBoxSingal, this, &MainWindow::enableDrawBox);
     connect(this->controlBoard, &ControlBoard::disableDrawBoxSignal, this, &MainWindow::disableDrawBox);
+
+    connect(this->centerFrameBoard, &FrameWindow::sendBoundingBox, this, &MainWindow::GetBox);
 }
 //! [1]
 
@@ -391,4 +393,11 @@ void MainWindow::enableDrawBox()
 void MainWindow::disableDrawBox()
 {
     this->centerFrameBoard->SetDrawFlag(false);
+}
+
+void MainWindow::GetBox(BoundingBox &box)
+{
+    this->box = BoundingBox(box.begX(),box.begY(),box.endX(), box.endY());
+
+    this->controlBoard->SetBoundingBox(this->box);
 }

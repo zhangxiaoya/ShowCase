@@ -36,6 +36,7 @@ private slots:
     void about();
     void ShowFinishedMessageSlot();
     void ShowFinishedStatusSlot();
+    void GetBox(BoundingBox& box);
 
 signals:
     void ShowFinishMessageSignal();
@@ -89,6 +90,9 @@ private:
     QAction* normalSizeAct;
     QAction *openVideoAct;
     QAction *runAct;
+
+    // BoundingBox
+    BoundingBox box;
 };
 
 #endif

@@ -28,6 +28,8 @@ FrameWindow::FrameWindow(QWidget *parent) : QWidget(parent)
 
     // set default scale
     this->scaleFactor = 1.0;
+
+    connect(this->pFrameBoard, &ImageLabel::finishDraw, this, &FrameWindow::finishDrawBox);
 }
 
 FrameWindow::~FrameWindow()
@@ -104,4 +106,10 @@ void FrameWindow::adjustScrollBar(QScrollBar *scrollBar, double factor)
 void FrameWindow::SetDrawFlag(const bool flag)
 {
     this->pFrameBoard->SetDrawFlag(flag);
+}
+
+
+void FrameWindow::finishDrawBox(BoundingBox &box)
+{
+    emit this -> sendBoundingBox(box);
 }

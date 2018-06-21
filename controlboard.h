@@ -11,11 +11,14 @@
 #include <QSpinBox>
 #include <QGroupBox>
 
+#include "boundingbox.h"
+
 class ControlBoard : public QWidget
 {
     Q_OBJECT
 public:
     explicit ControlBoard(QtAwesome* awesome, QWidget *parent = nullptr);
+    void SetBoundingBox(const BoundingBox& box);
 
 signals:
     void enableDrawBoxSingal();

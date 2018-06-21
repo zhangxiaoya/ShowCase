@@ -9,6 +9,7 @@
 #include <opencv2/core.hpp>
 
 #include <imagelabel.h>
+#include "boundingbox.h"
 
 class QScrollBar;
 
@@ -25,11 +26,15 @@ public:
     void SetDrawFlag(const bool flag);
 
 signals:
+    void sendBoundingBox(BoundingBox& box);
 
 public slots:
     void zoomIn();
     void zoomOut();
     void normalSize();
+
+private slots:
+    void finishDrawBox(BoundingBox& box);
 
 protected:
     void UpdateFrame();

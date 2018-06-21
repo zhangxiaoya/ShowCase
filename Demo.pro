@@ -19,13 +19,15 @@ SOURCES += \
     mainwindow.cpp \
     framewindow.cpp \
     controlboard.cpp \
-    imagelabel.cpp
+    imagelabel.cpp \
+    boundingbox.cpp
 
 HEADERS += \
     mainwindow.h \
     framewindow.h \
     controlboard.h \
-    imagelabel.h
+    imagelabel.h \
+    boundingbox.h
 
 RESOURCES +=
 
