@@ -141,7 +141,7 @@ void MainWindow::ReadFrame(cv::VideoCapture* pcapture)
             break;
         }
         FrameMutex.unlock();
-        std::this_thread::sleep_for(std::chrono::microseconds(10));
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 }
 //! [5]
@@ -162,7 +162,7 @@ void MainWindow::ShowFrame(FrameWindow* frameWindow)
         }
         frameWindow->SetFrame(frame);
         FrameMutex.unlock();
-        std::this_thread::sleep_for(std::chrono::microseconds(10));
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 }
 //! [6]
