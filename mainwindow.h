@@ -91,6 +91,9 @@ private:
     QAction *openVideoAct;
     QAction *runAct;
 
+    QAction* detectionAct;
+    QAction* superResolutionAct;
+
     // BoundingBox
     BoundingBox box;
 };

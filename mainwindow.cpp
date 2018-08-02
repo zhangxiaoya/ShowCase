@@ -303,6 +303,21 @@ void MainWindow::createActions()
 
     QAction *aboutQtAct = helpMenu->addAction(tr("About &Qt"), qApp, &QApplication::aboutQt);
     aboutQtAct->setStatusTip(tr("Show the Qt library's About box"));
+
+    /******/
+    QMenu *showCaseMenu = menuBar()->addMenu(tr("&ShowCase"));
+    QToolBar* showCaseToolBar = addToolBar(tr("ShowCase"));
+
+    this->detectionAct = new QAction(this->awesome->icon(fa::binoculars), tr("&Detection"), this);
+    this->superResolutionAct = new QAction(this->awesome->icon(fa::arrows), tr("&SuperResolution"), this);
+
+    showCaseMenu->addAction(detectionAct);
+    showCaseMenu->addAction(superResolutionAct);
+
+    showCaseToolBar->addAction(detectionAct);
+    showCaseToolBar->addAction(superResolutionAct);
+
+
 }
 //! [10]
 
