@@ -345,6 +345,7 @@ void MainWindow::createStatusBar()
 //! [12]
 void MainWindow::createDockWindows()
 {
+    /*
     QDockWidget *enhencedFrameDock = new QDockWidget(tr("EnhencedFrame"), this);
     enhencedFrameDock->setAllowedAreas(Qt::BottomDockWidgetArea |
                                        Qt::TopDockWidgetArea |
@@ -354,7 +355,7 @@ void MainWindow::createDockWindows()
     this->enhencedFrameBorad->setMinimumHeight(300);
     enhencedFrameDock->setWidget(this->enhencedFrameBorad);
     addDockWidget(Qt::BottomDockWidgetArea, enhencedFrameDock);
-
+    */
     QDockWidget *superResolutionFrameDock = new QDockWidget(tr("SuperResolutionFrame"), this);
     superResolutionFrameDock->setAllowedAreas(Qt::BottomDockWidgetArea |
                                        Qt::TopDockWidgetArea |
@@ -386,7 +387,7 @@ void MainWindow::createDockWindows()
     setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
     setCorner(Qt::BottomLeftCorner,Qt::LeftDockWidgetArea);
 
-    viewMenu->addAction(enhencedFrameDock->toggleViewAction());
+    // viewMenu->addAction(enhencedFrameDock->toggleViewAction());
 }
 
 //! [13]
@@ -433,8 +434,29 @@ void MainWindow::GetBox(BoundingBox &box)
 
 void MainWindow::detection()
 {
-    // TO-DO
-    QMessageBox::warning(this, tr("Info"), tr("Detection Showcase!"));
+    // open video file
+    std::string videofilepath = "/home/runisys/Desktop/data/Light/20171118091827796.mp4";
+    this->capture.open(videofilepath);
+    if(!this->capture.isOpened())
+    {
+        QMessageBox::warning(this, tr("Info"), tr("Unable to open video file!"));
+        return;
+    }
+
+    // set default finish flag
+    isFinished = false;
+
+    // Disable some actions
+    DisableZoomActions(true);
+    DisableFileActions(true);
+
+    // Update status
+    statusBar()->showMessage(tr("Processing..."));
+
+    // Luanch threads read, show and finished
+    this->pReadFrameThread = new std::thread(ReadFrame, &(this->capture));
+    this->pShowFrameThread = new std::thread(ShowFrame, centerFrameBoard);
+    this->pFinishedThread = new std::thread(Finished, this);
 }
 
 void MainWindow::superResolution()
