@@ -38,6 +38,11 @@ private slots:
     void ShowFinishedStatusSlot();
     void GetBox(BoundingBox& box);
 
+    void detection();
+    void superResolution();
+    void defogging();
+    void removeRain();
+
 signals:
     void ShowFinishMessageSignal();
     void ShowFinishStatusSignal();

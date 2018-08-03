@@ -327,6 +327,11 @@ void MainWindow::createActions()
     showCaseToolBar->addAction(defogAct);
     showCaseToolBar->addAction(removeRainAct);
 
+    connect(detectionAct, &QAction::triggered, this, &MainWindow::detection);
+    connect(superResolutionAct, &QAction::triggered, this, &MainWindow::superResolution);
+    connect(defogAct, &QAction::triggered, this, &MainWindow::defogging);
+    connect(removeRainAct, &QAction::triggered, this, &MainWindow::removeRain);
+
 }
 //! [10]
 
@@ -424,4 +429,28 @@ void MainWindow::GetBox(BoundingBox &box)
     this->box = BoundingBox(box.begX(),box.begY(),box.endX(), box.endY());
 
     this->controlBoard->SetBoundingBox(this->box);
+}
+
+void MainWindow::detection()
+{
+    // TO-DO
+    QMessageBox::warning(this, tr("Info"), tr("Detection Showcase!"));
+}
+
+void MainWindow::superResolution()
+{
+    // TO-DO
+    QMessageBox::warning(this, tr("Info"), tr("Super Resolution Showcase!"));
+}
+
+void MainWindow::defogging()
+{
+    // TO-DO
+    QMessageBox::warning(this, tr("Info"), tr("Defogging Showcase!"));
+}
+
+void MainWindow::removeRain()
+{
+    // TO-DO
+    QMessageBox::warning(this, tr("Info"), tr("Remove Rain Showcase!"));
 }
