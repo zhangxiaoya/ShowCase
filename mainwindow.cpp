@@ -310,13 +310,22 @@ void MainWindow::createActions()
 
     this->detectionAct = new QAction(this->awesome->icon(fa::binoculars), tr("&Detection"), this);
     this->superResolutionAct = new QAction(this->awesome->icon(fa::arrows), tr("&SuperResolution"), this);
+    this->defogAct = new QAction(this->awesome->icon(fa::adjust), tr("&Defogging"), this);
+    this->removeRainAct = new QAction(this->awesome->icon(fa::remove), tr("&RemoveRain"), this);
+    this->detectionAct->setStatusTip(tr("Show case about Object Detection"));
+    this->superResolutionAct->setStatusTip(tr("Show case about Super Resolution"));
+    this->defogAct->setStatusTip(tr("Defogging"));
+    this->removeRainAct->setStatusTip(tr("Remove Rain from video"));
 
     showCaseMenu->addAction(detectionAct);
     showCaseMenu->addAction(superResolutionAct);
+    showCaseMenu->addAction(defogAct);
+    showCaseMenu->addAction(removeRainAct);
 
     showCaseToolBar->addAction(detectionAct);
     showCaseToolBar->addAction(superResolutionAct);
-
+    showCaseToolBar->addAction(defogAct);
+    showCaseToolBar->addAction(removeRainAct);
 
 }
 //! [10]

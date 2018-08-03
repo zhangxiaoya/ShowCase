@@ -93,6 +93,8 @@ private:
 
     QAction* detectionAct;
     QAction* superResolutionAct;
+    QAction* defogAct;
+    QAction* removeRainAct;
 
     // BoundingBox
     BoundingBox box;
