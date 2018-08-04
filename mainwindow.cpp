@@ -87,7 +87,7 @@ void MainWindow::openVideoFile()
 //! [2]
 
 //! [3]
-void MainWindow::Finished(MainWindow *mainWindow)
+void MainWindow::DetectionFinished(MainWindow *mainWindow)
 {
     FinishFlagMutex.lock();
     while (!isFinished)
@@ -125,14 +125,14 @@ void MainWindow::runProcess()
     statusBar()->showMessage(tr("Processing..."));
 
     // Luanch threads read, show and finished
-    this->pReadFrameThread = new std::thread(ReadFrame, &(this->capture));
-    this->pShowFrameThread = new std::thread(ShowFrame, centerFrameBoard);
-    this->pFinishedThread = new std::thread(Finished, this);
+    this->pReadFrameThread = new std::thread(DetectionReadFrame, &(this->capture));
+    this->pShowFrameThread = new std::thread(DetectionShowFrame, centerFrameBoard);
+    this->pFinishedThread = new std::thread(DetectionFinished, this);
 }
 //! [4]
 
 //! [5]
-void MainWindow::ReadFrame(cv::VideoCapture* pcapture)
+void MainWindow::DetectionReadFrame(cv::VideoCapture* pcapture)
 {
     while(true)
     {
@@ -151,7 +151,7 @@ void MainWindow::ReadFrame(cv::VideoCapture* pcapture)
 //! [5]
 
 //! [6]
-void MainWindow::ShowFrame(FrameWindow* frameWindow)
+void MainWindow::DetectionShowFrame(FrameWindow* frameWindow)
 {
     while(true)
     {
@@ -498,9 +498,9 @@ void MainWindow::detection()
     statusBar()->showMessage(tr("Processing..."));
 
     // Luanch threads read, show and finished
-    this->pReadFrameThread = new std::thread(ReadFrame, &(this->capture));
-    this->pShowFrameThread = new std::thread(ShowFrame, centerFrameBoard);
-    this->pFinishedThread = new std::thread(Finished, this);
+    this->pReadFrameThread = new std::thread(DetectionReadFrame, &(this->capture));
+    this->pShowFrameThread = new std::thread(DetectionShowFrame, centerFrameBoard);
+    this->pFinishedThread = new std::thread(DetectionFinished, this);
 }
 
 void MainWindow::superResolution()
@@ -511,12 +511,58 @@ void MainWindow::superResolution()
 
 void MainWindow::defogging()
 {
-    // TO-DO
+    // TO-DO Zhang Zheng
     QMessageBox::warning(this, tr("Info"), tr("Defogging Showcase!"));
 }
 
 void MainWindow::removeRain()
 {
-    // TO-DO
+    // TO-DO Zhang Zheng
     QMessageBox::warning(this, tr("Info"), tr("Remove Rain Showcase!"));
+}
+
+void MainWindow::SuperResolutionReadFrame(cv::VideoCapture *pcapture)
+{
+    // TO-DO Zhyn
+
+}
+
+void MainWindow::SuperResolutionShowFrame(FrameWindow *frameWindow)
+{
+    // TO-DO Zhyn
+}
+
+void MainWindow::SuperResolutionFinished(MainWindow *mainWindow)
+{
+    // TO-DO Zhyn
+}
+
+void MainWindow::DeFogReadFrame(cv::VideoCapture *pcapture)
+{
+    // TO-DO Zhang Zheng
+}
+
+void MainWindow::DeFogShowFrame(FrameWindow *frameWindow)
+{
+    // TO-DO Zhang Zheng
+}
+
+void MainWindow::DeFogFinished(MainWindow *mainWindow)
+{
+    // TO-DO Zhang Zheng
+}
+
+void MainWindow::RemoveRainReadFrame(cv::VideoCapture *pcapture)
+{
+    // TO-DO Zhang Zheng
+}
+
+void MainWindow::RemoveRainShowFrame(FrameWindow *frameWindow)
+{
+    // TO-DO Zhang Zheng
+}
+
+void MainWindow::RemoveRainFinished(MainWindow *mainWindow)
+{
+    // TO-DO Zhang Zheng
 }

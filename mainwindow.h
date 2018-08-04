@@ -57,9 +57,21 @@ private:
 
 
     // declare thread funcs
-    static void ReadFrame(cv::VideoCapture* pcapture);
-    static void ShowFrame(FrameWindow* frameWindow);
-    static void Finished(MainWindow* mainWindow);
+    static void DetectionReadFrame(cv::VideoCapture* pcapture);
+    static void DetectionShowFrame(FrameWindow* frameWindow);
+    static void DetectionFinished(MainWindow* mainWindow);
+
+    static void SuperResolutionReadFrame(cv::VideoCapture* pcapture);
+    static void SuperResolutionShowFrame(FrameWindow* frameWindow);
+    static void SuperResolutionFinished(MainWindow* mainWindow);
+
+    static void DeFogReadFrame(cv::VideoCapture* pcapture);
+    static void DeFogShowFrame(FrameWindow* frameWindow);
+    static void DeFogFinished(MainWindow* mainWindow);
+
+    static void RemoveRainReadFrame(cv::VideoCapture* pcapture);
+    static void RemoveRainShowFrame(FrameWindow* frameWindow);
+    static void RemoveRainFinished(MainWindow* mainWindow);
 
     QListWidget *logList;
 
