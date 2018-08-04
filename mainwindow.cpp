@@ -7,12 +7,15 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/video.hpp>
 #include <thread>
+#include <fstream>
+#include <iostream>
 
 // Global variables for thread
 static std::mutex FrameMutex;
 static std::mutex FinishFlagMutex;
 static cv::Mat frame;
 static bool isFinished;
+static int frameIndex;
 
 //! [1]
 MainWindow::MainWindow(QApplication* app)
@@ -140,6 +143,7 @@ void MainWindow::ReadFrame(cv::VideoCapture* pcapture)
             FrameMutex.unlock();
             break;
         }
+        frameIndex++;
         FrameMutex.unlock();
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
@@ -160,6 +164,43 @@ void MainWindow::ShowFrame(FrameWindow* frameWindow)
             FrameMutex.unlock();
             break;
         }
+
+        int xmin, xmax,ymin,ymax;
+        double score;
+        std::string label;
+        std::string item;
+
+        char resultFileNameBuff[256];
+        char resultFileNameFormat[] = "/home/runisys/Desktop/CodeBag/Demo/Data/result/result_%06d.txt";
+        std::sprintf(resultFileNameBuff, resultFileNameFormat, frameIndex);
+        std::string filename(resultFileNameBuff);
+        std::ifstream fin(filename);
+
+        int font_face = cv::FONT_HERSHEY_COMPLEX;
+        double font_scale = 1;
+        int thickness = 2;
+        int baseline;
+
+        while(fin)
+        {
+            fin >> item;
+            if(item.empty())
+                break;
+            xmin = std::stoi(item);
+            fin >> item;
+            ymin = std::stoi(item);
+            fin >> item;
+            xmax = std::stoi(item);
+            fin >> item;
+            ymax = std::stoi(item);
+            fin >> item;
+            score = std::stod(item);
+            fin >> label;
+
+            cv::rectangle(frame,cv::Rect(cv::Point(xmin, ymin), cv::Point(xmax, ymax)),cv::Scalar(255,255,0),2);
+            cv::putText(frame,label,cv::Point(xmin,ymin),font_face,font_scale,cv::Scalar(0,255,255),thickness);
+        }
+
         frameWindow->SetFrame(frame);
         FrameMutex.unlock();
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
@@ -435,7 +476,7 @@ void MainWindow::GetBox(BoundingBox &box)
 void MainWindow::detection()
 {
     // open video file
-    std::string videofilepath = "/home/runisys/Desktop/data/Light/20171118091827796.mp4";
+    std::string videofilepath = "/home/runisys/Desktop/CodeBag/Demo/Data/video.avi";
     this->capture.open(videofilepath);
     if(!this->capture.isOpened())
     {
@@ -449,6 +490,9 @@ void MainWindow::detection()
     // Disable some actions
     DisableZoomActions(true);
     DisableFileActions(true);
+
+    // Reset Frame Index;
+    frameIndex = -1;
 
     // Update status
     statusBar()->showMessage(tr("Processing..."));
