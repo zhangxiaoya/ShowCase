@@ -232,7 +232,7 @@ public:
 
         for (auto i = startIndex; i < (image_count + startIndex); ++i)
         {
-            char name[50];
+            char name[256];
             snprintf(name, sizeof(name), fileNameFormatCStr, i);
 
             std::string fullName(name);

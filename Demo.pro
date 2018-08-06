@@ -15,13 +15,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 include(QtAwesome/QtAwesome.pri)
 
 SOURCES += \
-        main.cpp \
+    main.cpp \
     mainwindow.cpp \
     framewindow.cpp \
     controlboard.cpp \
     imagelabel.cpp \
     boundingbox.cpp \
-    SuperResolutionBase.cpp
+    SuperResolutionBase.cpp \
+    defog.cpp \
+    removeraincpu.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -29,23 +31,33 @@ HEADERS += \
     controlboard.h \
     imagelabel.h \
     boundingbox.h \
-    SuperResolutionBase.h
+    SuperResolutionBase.h \
+    defog.h \
+    ringbuffer.h \
+    removeraincpu.h
 
 RESOURCES +=
 
+#INCLUDEPATH += D:\opencv_qt\install\include\
+#INCLUDEPATH += D:\opencv_qt\install\include\opencv\
+#INCLUDEPATH += D:\opencv_qt\install\include\opencv2\
+
+#LIBS += D:\opencv_qt\lib\libopencv_*.a
+
+
 win32
 {
-INCLUDEPATH +=
-LIBS +=
+    INCLUDEPATH +=
+    LIBS +=
 }
 
 unix
 {
-INCLUDEPATH += /usr/local/opencv3/include/
-LIBS += -L/usr/local/opencv3/lib/ \
--lopencv_core \
--lopencv_imgcodecs \
--lopencv_highgui \
--lopencv_imgproc \
--lopencv_videoio
+    INCLUDEPATH += /usr/local/opencv3/include/
+    LIBS += -L/usr/local/opencv3/lib/ \
+            -lopencv_core \
+            -lopencv_imgcodecs \
+            -lopencv_highgui \
+            -lopencv_imgproc \
+            -lopencv_videoio
 }

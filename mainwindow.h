@@ -8,8 +8,11 @@
 #include "framewindow.h"
 #include "QtAwesome.h"
 #include "controlboard.h"
+#include "defog.h"
+#include "removeraincpu.h"
 #include <thread>
 #include <mutex>
+#include "SuperResolutionBase.h"
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -61,17 +64,25 @@ private:
     static void DetectionShowFrame(FrameWindow* frameWindow);
     static void DetectionFinished(MainWindow* mainWindow);
 
-    static void SuperResolutionReadFrame(cv::VideoCapture* pcapture);
-    static void SuperResolutionShowFrame(FrameWindow* frameWindow);
+    static void SuperResolutionReadFrame();
+    static void SuperResolutionShowFrame(FrameWindow* frameWindow,FrameWindow *enhenceWindow,SuperResolutionBase* superResolution);
     static void SuperResolutionFinished(MainWindow* mainWindow);
 
     static void DeFogReadFrame(cv::VideoCapture* pcapture);
-    static void DeFogShowFrame(FrameWindow* frameWindow);
+    static void DeFogShowFrame(FrameWindow* frameWindow, FrameWindow *enhenceWindow);
     static void DeFogFinished(MainWindow* mainWindow);
 
     static void RemoveRainReadFrame(cv::VideoCapture* pcapture);
-    static void RemoveRainShowFrame(FrameWindow* frameWindow);
-    static void RemoveRainFinished(MainWindow* mainWindow);
+    static void RemoveRainShowFrame(FrameWindow* frameWindow, FrameWindow *enhenceWindow, RemoveRainCpu* pRemoveRain);
+    static void RemoveRainFinished(MainWindow* mainWindow, RemoveRainCpu* pRemoveRain);
+
+    //removeRain Class
+    RemoveRainCpu* pRemoveRain;
+
+//    //storage buffer
+//    ReadRingBuffer* readBuff;
+//    ShowRingBuffer* showBuff;
+
 
     QListWidget *logList;
 
