@@ -20,14 +20,16 @@ SOURCES += \
     framewindow.cpp \
     controlboard.cpp \
     imagelabel.cpp \
-    boundingbox.cpp
+    boundingbox.cpp \
+    SuperResolutionBase.cpp
 
 HEADERS += \
     mainwindow.h \
     framewindow.h \
     controlboard.h \
     imagelabel.h \
-    boundingbox.h
+    boundingbox.h \
+    SuperResolutionBase.h
 
 RESOURCES +=
 
