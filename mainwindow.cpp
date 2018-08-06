@@ -14,9 +14,11 @@
 static std::mutex FrameMutex;
 static std::mutex FinishFlagMutex;
 static cv::Mat frame;
+static cv::Mat enhencedFrame;
 static bool isFinished;
+static bool isFinishShowFrame;
 static int frameIndex;
-
+static const int buffMaxStorageCount(10);
 //! [1]
 MainWindow::MainWindow(QApplication* app)
 {
@@ -386,7 +388,7 @@ void MainWindow::createStatusBar()
 //! [12]
 void MainWindow::createDockWindows()
 {
-    /*
+
     QDockWidget *enhencedFrameDock = new QDockWidget(tr("EnhencedFrame"), this);
     enhencedFrameDock->setAllowedAreas(Qt::BottomDockWidgetArea |
                                        Qt::TopDockWidgetArea |
@@ -396,12 +398,18 @@ void MainWindow::createDockWindows()
     this->enhencedFrameBorad->setMinimumHeight(300);
     enhencedFrameDock->setWidget(this->enhencedFrameBorad);
     addDockWidget(Qt::BottomDockWidgetArea, enhencedFrameDock);
-    */
+
     QDockWidget *superResolutionFrameDock = new QDockWidget(tr("SuperResolutionFrame"), this);
     superResolutionFrameDock->setAllowedAreas(Qt::BottomDockWidgetArea |
                                        Qt::TopDockWidgetArea |
                                        Qt::RightDockWidgetArea |
                                        Qt::LeftDockWidgetArea);
+    this->enhencedFrameBorad = new FrameWindow(enhencedFrameDock);
+    this->enhencedFrameBorad->setMinimumHeight(300);
+    enhencedFrameDock->setWidget(this->enhencedFrameBorad);
+    addDockWidget(Qt::BottomDockWidgetArea, enhencedFrameDock);
+
+
     this->superResolutionFrameBorad = new FrameWindow(superResolutionFrameDock);
     this->superResolutionFrameBorad->setMinimumHeight(300);
     this->superResolutionFrameBorad->setMinimumWidth(300);
@@ -512,13 +520,59 @@ void MainWindow::superResolution()
 void MainWindow::defogging()
 {
     // TO-DO Zhang Zheng
-    QMessageBox::warning(this, tr("Info"), tr("Defogging Showcase!"));
+    // open video file
+    std::string videofilepath = "C:\\Users\\zerm1\\Desktop\\fog.avi";
+    this->capture.open(videofilepath);
+    if(!this->capture.isOpened())
+    {
+        QMessageBox::warning(this, tr("Info"), tr("Unable to open video file!"));
+        return;
+    }
+
+    // set default finish flag
+    isFinished = false;
+    isFinishShowFrame = false;
+
+    // Disable some actions
+    DisableZoomActions(true);
+    DisableFileActions(true);
+
+    // Reset Frame Index;
+    frameIndex = -1;
+
+    // Update status
+    statusBar()->showMessage(tr("Processing..."));
+
+    capture >> frame;
+    cv::resize(frame,frame,Size(1080,720));
+    frame.copyTo(enhencedFrame);
+
+    pReadFrameThread = new std::thread(DeFogReadFrame, &(this->capture));
+    pShowFrameThread = new std::thread(DeFogShowFrame, centerFrameBoard, enhencedFrameBorad);
+    pFinishedThread = new std::thread(DeFogFinished, this);
 }
 
 void MainWindow::removeRain()
 {
     // TO-DO Zhang Zheng
-    QMessageBox::warning(this, tr("Info"), tr("Remove Rain Showcase!"));
+    std::string videofilepath = "C:\\Users\\zerm1\\Desktop\\testSnow.mp4";
+    this->capture.open(videofilepath);
+    if(!this->capture.isOpened())
+    {
+        QMessageBox::warning(this, tr("Info"), tr("Unable to open video file!"));
+        return;
+    }
+
+    capture >> frame;
+    cv::resize(frame,frame,Size(1080,720));
+    pRemoveRain = new RemoveRainCpu(frame);
+
+    isFinishShowFrame = false;
+
+    pReadFrameThread = new std::thread(RemoveRainReadFrame, &(this->capture));
+    pShowFrameThread = new std::thread(RemoveRainShowFrame, centerFrameBoard, enhencedFrameBorad, this->pRemoveRain);
+    pFinishedThread = new std::thread(RemoveRainFinished, this, this->pRemoveRain);
+
 }
 
 void MainWindow::SuperResolutionReadFrame(cv::VideoCapture *pcapture)
@@ -540,29 +594,127 @@ void MainWindow::SuperResolutionFinished(MainWindow *mainWindow)
 void MainWindow::DeFogReadFrame(cv::VideoCapture *pcapture)
 {
     // TO-DO Zhang Zheng
+    while(true)
+    {
+        //read frame from pcapture
+        FrameMutex.lock();
+        pcapture->read(frame);
+        if(frame.empty())
+        {
+            FrameMutex.unlock();
+            break;
+        }
+        cv::resize(frame,frame,Size(1080,720));
+        FrameMutex.unlock();
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
 }
 
-void MainWindow::DeFogShowFrame(FrameWindow *frameWindow)
+void MainWindow::DeFogShowFrame(FrameWindow *frameWindow, FrameWindow *enhenceWindow)
 {
     // TO-DO Zhang Zheng
+    while(true)
+    {
+        FrameMutex.lock();
+        if(frame.empty())
+        {
+            FinishFlagMutex.lock();
+            isFinishShowFrame = true;
+            FinishFlagMutex.unlock();
+            FrameMutex.unlock();
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+            break;
+        }
+
+        Defog::GetDefogImg(frame,enhencedFrame,5,30,0.001);
+        frameWindow->SetFrame(frame);
+        enhenceWindow->SetFrame(enhencedFrame);
+        FrameMutex.unlock();
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
 }
 
 void MainWindow::DeFogFinished(MainWindow *mainWindow)
 {
     // TO-DO Zhang Zheng
+    FinishFlagMutex.lock();
+    while (!isFinishShowFrame)
+    {
+        FinishFlagMutex.unlock();
+        std::this_thread::sleep_for(std::chrono::microseconds(10));
+    }
+    FinishFlagMutex.unlock();
+    mainWindow->DisableZoomActions(false);
+    mainWindow->DisableFileActions(false);
+    emit mainWindow->ShowFinishedStatusSlot();
+    emit mainWindow->ShowFinishMessageSignal();
+
+    mainWindow->VideoFilePath.clear();
+    mainWindow->capture.release();
+
 }
 
 void MainWindow::RemoveRainReadFrame(cv::VideoCapture *pcapture)
 {
     // TO-DO Zhang Zheng
+    while(true)
+    {
+        FrameMutex.lock();
+        pcapture->read(frame);
+        if(frame.empty())
+        {
+            FrameMutex.unlock();
+            break;
+        }
+        cv::resize(frame,frame,Size(1080,720));
+        FrameMutex.unlock();
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
 }
 
-void MainWindow::RemoveRainShowFrame(FrameWindow *frameWindow)
+void MainWindow::RemoveRainShowFrame(FrameWindow *frameWindow, FrameWindow *enhenceWindow, RemoveRainCpu* pRemoveRain)
 {
     // TO-DO Zhang Zheng
+    time_t t1, t2;
+    while (true)
+    {
+        FrameMutex.lock();
+        if(frame.empty())
+        {
+            FinishFlagMutex.lock();
+            isFinishShowFrame = true;
+            FinishFlagMutex.unlock();
+            FrameMutex.unlock();
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+            break;
+        }
+        t1 = clock();
+        pRemoveRain->NewGetRemoveRainFrame(frame, enhencedFrame);
+        t2 = clock();
+        std::cout<<"RemoveRain use time is " << t2 - t1 << std::endl;
+        frameWindow->SetFrame(frame);
+        enhenceWindow->SetFrame(enhencedFrame);
+        FrameMutex.unlock();
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
 }
 
-void MainWindow::RemoveRainFinished(MainWindow *mainWindow)
+void MainWindow::RemoveRainFinished(MainWindow *mainWindow, RemoveRainCpu* pRemoveRain)
 {
     // TO-DO Zhang Zheng
+    FinishFlagMutex.lock();
+    while (!isFinishShowFrame)
+    {
+        FinishFlagMutex.unlock();
+        std::this_thread::sleep_for(std::chrono::microseconds(10));
+    }
+    FinishFlagMutex.unlock();
+    mainWindow->DisableZoomActions(false);
+    mainWindow->DisableFileActions(false);
+    emit mainWindow->ShowFinishedStatusSlot();
+    emit mainWindow->ShowFinishMessageSignal();
+
+    mainWindow->VideoFilePath.clear();
+    mainWindow->capture.release();
+    delete pRemoveRain;
 }

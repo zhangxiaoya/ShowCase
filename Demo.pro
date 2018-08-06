@@ -20,30 +20,46 @@ SOURCES += \
     framewindow.cpp \
     controlboard.cpp \
     imagelabel.cpp \
-    boundingbox.cpp
+    boundingbox.cpp \
+    defog.cpp \
+    removeraincpu.cpp
 
 HEADERS += \
     mainwindow.h \
     framewindow.h \
     controlboard.h \
     imagelabel.h \
-    boundingbox.h
+    boundingbox.h \
+    defog.h \
+    ringbuffer.h \
+    removeraincpu.h
+
+
 
 RESOURCES +=
 
-win32
-{
-INCLUDEPATH +=
-LIBS +=
-}
+INCLUDEPATH += D:\opencv_qt\install\include\
+INCLUDEPATH += D:\opencv_qt\install\include\opencv\
+INCLUDEPATH += D:\opencv_qt\install\include\opencv2\
 
-unix
-{
-INCLUDEPATH += /usr/local/opencv3/include/
-LIBS += -L/usr/local/opencv3/lib/ \
--lopencv_core \
--lopencv_imgcodecs \
--lopencv_highgui \
--lopencv_imgproc \
--lopencv_videoio
-}
+LIBS += D:\opencv_qt\lib\libopencv_*.a
+
+
+
+
+#win32
+#{
+#INCLUDEPATH +=
+#LIBS +=
+#}
+
+#unix
+#{
+#INCLUDEPATH += /usr/local/opencv3/include/
+#LIBS += -L/usr/local/opencv3/lib/ \
+#-lopencv_core \
+#-lopencv_imgcodecs \
+#-lopencv_highgui \
+#-lopencv_imgproc \
+#-lopencv_videoio
+#}
