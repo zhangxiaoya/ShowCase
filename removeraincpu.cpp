@@ -36,7 +36,29 @@ RemoveRainCpu::RemoveRainCpu(const Mat& frame):
 //        cv::resize(frame, frame, cv::Size(1080, 720));
 //        SentFrameToData(frame, i);
 //        frameCount++;
-//    }
+    //    }
+}
+
+RemoveRainCpu::~RemoveRainCpu()
+{
+    if(datas != nullptr)
+    {
+        for(auto i = 0; i < height; ++i)
+        {
+            for (auto j = 0; j < width; ++j)
+            {
+                delete[]datas[i][j];
+            }
+            delete[]datas[i];
+        }
+        delete[]datas;
+    }
+
+    if (weight != nullptr)
+        delete[]weight;
+
+    if (diffValue != nullptr)
+        delete[]diffValue;
 }
 
 bool RemoveRainCpu::NewGetRemoveRainFrame(const Mat &src, Mat &dst)
