@@ -11,6 +11,7 @@ class RemoveRainCpu
 {
 public:
     RemoveRainCpu(const Mat& frame);
+    ~RemoveRainCpu();
     bool NewGetRemoveRainFrame(const cv::Mat& srcFrame, cv::Mat& dstFrame);
 
 private:
