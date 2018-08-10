@@ -38,26 +38,26 @@ HEADERS += \
 
 RESOURCES +=
 
-#INCLUDEPATH += D:\opencv_qt\install\include\
-#INCLUDEPATH += D:\opencv_qt\install\include\opencv\
-#INCLUDEPATH += D:\opencv_qt\install\include\opencv2\
+INCLUDEPATH += D:\Application\OpenCVMinGW\include\opencv2\
+INCLUDEPATH += D:\Application\OpenCVMinGW\include\opencv\
+INCLUDEPATH += D:\Application\OpenCVMinGW\include\
 
-#LIBS += D:\opencv_qt\lib\libopencv_*.a
+LIBS += D:\Application\OpenCVMinGW\x86\mingw\lib\libopencv_*.a
 
 
-win32
-{
-    INCLUDEPATH +=
-    LIBS +=
-}
+#win32
+#{
+#    INCLUDEPATH +=
+#    LIBS +=
+#}
 
-unix
-{
-    INCLUDEPATH += /usr/local/opencv3/include/
-    LIBS += -L/usr/local/opencv3/lib/ \
-            -lopencv_core \
-            -lopencv_imgcodecs \
-            -lopencv_highgui \
-            -lopencv_imgproc \
-            -lopencv_videoio
-}
+#unix
+#{
+#    INCLUDEPATH += /usr/local/opencv3/include/
+#    LIBS += -L/usr/local/opencv3/lib/ \
+#            -lopencv_core \
+#            -lopencv_imgcodecs \
+#            -lopencv_highgui \
+#            -lopencv_imgproc \
+#            -lopencv_videoio
+#}

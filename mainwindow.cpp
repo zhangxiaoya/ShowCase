@@ -22,8 +22,8 @@ static int frameIndex;
 static const int buffMaxStorageCount(10);
 static int startIndex = 1;
 static int totalImageCount = 82;
-static std::string fileNameFormat = "/home/runisys/Desktop/Github/FB/data/Emily/%06d.png";
-static std::string resultNameFormat = "/home/runisys/Desktop/Github/FB/result/Emily_4*4_result_%02d.png";
+static std::string fileNameFormat = "D:\\Bag\\Code_Qt\\ShowCase\\Data\\Emily\\%06d.png";
+static std::string resultNameFormat = "D:\\Bag\\Code_Qt\\ShowCase\\Data\\FB\\result\\Emily_4*4_result_%02d.png";
 
 //! [1]
 MainWindow::MainWindow(QApplication* app)
@@ -179,7 +179,7 @@ void MainWindow::DetectionShowFrame(FrameWindow* frameWindow)
         std::string item;
 
         char resultFileNameBuff[256];
-        char resultFileNameFormat[] = "/home/runisys/Desktop/CodeBag/Demo/Data/result/result_%06d.txt";
+        char resultFileNameFormat[] = "D:\\Bag\\Code_Qt\\ShowCase\\Data\\result\\result_%06d.txt";
         std::sprintf(resultFileNameBuff, resultFileNameFormat, frameIndex);
         std::string filename(resultFileNameBuff);
         std::ifstream fin(filename);
@@ -490,7 +490,7 @@ void MainWindow::GetBox(BoundingBox &box)
 void MainWindow::detection()
 {
     // open video file
-    std::string videofilepath = "/home/runisys/Desktop/CodeBag/Demo/Data/video.avi";
+    std::string videofilepath = "D:\\Bag\\Code_Qt\\ShowCase\\Data\\video.avi";
     this->capture.open(videofilepath);
     if(!this->capture.isOpened())
     {
@@ -566,7 +566,7 @@ void MainWindow::defogging()
 {
     // TO-DO Zhang Zheng
     // open video file
-    std::string videofilepath = "/home/runisys/Desktop/CodeBag/Demo/Data/fog.avi";
+    std::string videofilepath = "D:\\Bag\\Code_Qt\\ShowCase\\Data\\fog.avi";
     this->capture.open(videofilepath);
     if(!this->capture.isOpened())
     {
@@ -600,7 +600,7 @@ void MainWindow::defogging()
 void MainWindow::removeRain()
 {
     // TO-DO Zhang Zheng
-    std::string videofilepath = "/home/runisys/Desktop/CodeBag/Demo/Data/testSnow.mp4";
+    std::string videofilepath = "D:\\Bag\\Code_Qt\\ShowCase\\Data\\testSnow.mp4";
     this->capture.open(videofilepath);
     if(!this->capture.isOpened())
     {
